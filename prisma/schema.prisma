@@ -1,0 +1,182 @@
+// Prisma Schema - DeprisaCheck Admisión de Mercancía
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Catálogo de tipos de mercancía (migrado desde Power Apps DeprisaCheck)
+// Tipos con requiresChecklist=true: ANIMALES_VIVOS, RESTOS_HUMANOS, PERECEDEROS, ARMAS, BATERIAS_LITIO, RADIACTIVOS, SUSTANCIAS_BIOLOGICAS, HIELO_SECO
+// PointOfSaleType: city | airport_ato
+// UserRole: advisor | admin | operator
+// ManifestStatus: generated | delivered
+// ChecklistStatus: pending | completed | rejected
+
+// Catálogo maestro de tipos (selección explícita del asesor)
+model MerchandiseTypeCatalog {
+  id               String   @id @default(uuid())
+  code             String   @unique  // ANIMALES_VIVOS, RESTOS_HUMANOS, etc.
+  name             String
+  requiresChecklist Boolean @default(false)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  merchandises      Merchandise[]
+  checklistTemplates ChecklistTemplate[]
+}
+
+// Modelos
+model Merchandise {
+  id                   String   @id @default(uuid())
+  clientId             String
+  pointOfSaleId        String
+  merchandiseTypeId    String   // Selección explícita del asesor (catálogo)
+  description       String?
+  classificationCode String?
+  weight            Float?
+  dimensions        String?
+  status            String            @default("pending") // MerchandiseStatus
+  rejectionReason   String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  client             Client   @relation(fields: [clientId], references: [id])
+  pointOfSale        PointOfSale @relation(fields: [pointOfSaleId], references: [id])
+  merchandiseType    MerchandiseTypeCatalog @relation(fields: [merchandiseTypeId], references: [id])
+  checklists         MerchandiseChecklist[]
+  guides             Guide[]
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  merchandises      Merchandise[]
+  restrictions      ClientRestriction[]
+}
+
+model ClientRestriction {
+  id                  String   @id @default(uuid())
+  clientId            String
+  merchandiseTypeId   String   // Referencia a catálogo
+  restrictionType String
+  pointOfSaleId   String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id])
+}
+
+model User {
+  id                    String   @id @default(uuid())
+  username              String   @unique
+  passwordHash          String
+  email                 String?
+  role                  String   @default("advisor") // UserRole
+  isDeprisacheckEnabled Boolean  @default(false)
+  pointOfSaleId         String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  pointOfSale PointOfSale? @relation(fields: [pointOfSaleId], references: [id])
+}
+
+model PointOfSale {
+  id              String          @id @default(uuid())
+  name            String
+  type            String // PointOfSaleType: city | airport_ato
+  baseRestrictions String?
+  isActive        Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  merchandises  Merchandise[]
+  users         User[]
+  manifests     Manifest[]
+  handlingPerms HandlingPermission[]
+}
+
+model HandlingPermission {
+  id                  String   @id @default(uuid())
+  pointOfSaleId       String
+  merchandiseTypeId   String
+  isPermitted     Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  pointOfSale PointOfSale @relation(fields: [pointOfSaleId], references: [id])
+}
+
+model ChecklistTemplate {
+  id                  String   @id @default(uuid())
+  name                String
+  merchandiseTypeId   String   // Vinculado al catálogo
+  pointOfSaleType     String   // city | airport_ato
+  rejectionTemplateId String?
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  merchandiseType MerchandiseTypeCatalog @relation(fields: [merchandiseTypeId], references: [id])
+  items          ChecklistTemplateItem[]
+  checklists     MerchandiseChecklist[]
+}
+
+model ChecklistTemplateItem {
+  id         String   @id @default(uuid())
+  templateId String
+  text       String
+  required   Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  template ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+}
+
+model MerchandiseChecklist {
+  id               String         @id @default(uuid())
+  merchandiseId    String
+  templateId       String
+  completedByUserId String?
+  responses        String         // JSON: { item_id: value }
+  status           String           @default("pending") // ChecklistStatus
+  completionDate   DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  merchandise  Merchandise      @relation(fields: [merchandiseId], references: [id])
+  template     ChecklistTemplate @relation(fields: [templateId], references: [id])
+}
+
+model Guide {
+  id          String   @id @default(uuid())
+  guideNumber String
+  merchandiseId String
+  printDate   DateTime @default(now())
+  documentUrl String?
+  createdAt   DateTime @default(now())
+
+  merchandise Merchandise @relation(fields: [merchandiseId], references: [id])
+}
+
+model Manifest {
+  id            String        @id @default(uuid())
+  manifestNumber String
+  pointOfSaleId String
+  merchandiseIds String       // JSON array de IDs
+  status        String         @default("generated") // ManifestStatus
+  creationDate  DateTime      @default(now())
+  deliveryDate  DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  pointOfSale PointOfSale @relation(fields: [pointOfSaleId], references: [id])
+}
