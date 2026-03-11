@@ -16,6 +16,7 @@ import type { MerchandiseData } from '../types';
 export interface StartAdmissionResult {
   status: string;
   merchandiseId: string;
+  merchandiseTypeId?: string;
   requiresDeprisacheck?: boolean;
   rejectionReason?: string;
 }
@@ -80,6 +81,7 @@ export const admissionService = {
       return {
         status: 'requires_deprisacheck',
         merchandiseId: merchandise.id,
+        merchandiseTypeId: merchandiseData.merchandiseTypeId,
         requiresDeprisacheck: true,
       };
     }

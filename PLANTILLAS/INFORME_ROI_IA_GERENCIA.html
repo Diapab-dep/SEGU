@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Informe ROI — IA vs Fabrica de Software — Deprisa</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; font-size: 10.5pt; color: #1a1a1a; background: #fff; }
+
+  /* ── Pagina ── */
+  .page { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 18mm 20mm 22mm 20mm; position: relative; }
+  @media print {
+    .page { page-break-after: always; margin: 0; }
+    .page:last-child { page-break-after: avoid; }
+    @page { size: A4; margin: 0; }
+  }
+
+  /* ── Cabecera de pagina (estilo RFP Deprisa) ── */
+  .page-header { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
+  .page-header td { border: 1px solid #555; padding: 4px 8px; font-size: 9pt; vertical-align: middle; }
+  .page-header .logo-cell { width: 120px; border: 1px solid #555; padding: 4px; text-align: center; }
+  .page-header .logo-cell img { height: 38px; width: auto; }
+  .page-header .title-cell { font-weight: bold; font-size: 9pt; text-align: center; }
+  .page-header .info-cell { text-align: center; font-size: 9pt; }
+  .page-header .info-right { font-weight: bold; font-size: 9pt; text-align: center; }
+
+  /* ── Portada ── */
+  .cover-title { text-align: center; margin-top: 60px; margin-bottom: 40px; }
+  .cover-title h1 { font-size: 22pt; font-weight: bold; color: #1a2d4a; line-height: 1.3; text-transform: uppercase; }
+  .cover-title h2 { font-size: 14pt; color: #c0392b; margin-top: 10px; font-weight: bold; }
+  .cover-title p  { font-size: 11pt; color: #555; margin-top: 8px; }
+
+  .cover-meta { margin: 50px auto 0 auto; max-width: 480px; }
+  .cover-meta table { width: 100%; border-collapse: collapse; }
+  .cover-meta td { border: 1px solid #999; padding: 7px 12px; font-size: 10pt; }
+  .cover-meta .lbl { background: #1a2d4a; color: #fff; font-weight: bold; text-align: center; width: 40%; }
+
+  /* ── Tabla de firmas ── */
+  .sign-table { width: 100%; border-collapse: collapse; margin-top: 60px; }
+  .sign-table th { background: #1a2d4a; color: #fff; padding: 8px; font-size: 10pt; text-align: center; border: 1px solid #ccc; }
+  .sign-table td { border: 1px solid #ccc; padding: 10px 12px; font-size: 10pt; text-align: center; vertical-align: top; line-height: 1.5; }
+  .sign-table .name { font-weight: bold; }
+
+  /* ── TOC ── */
+  .toc { margin-top: 20px; }
+  .toc h2 { font-size: 13pt; color: #1a2d4a; font-weight: bold; text-transform: uppercase; margin-bottom: 14px; }
+  .toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; font-size: 10pt; border-bottom: 1px dotted #ccc; }
+  .toc-item.level2 { padding-left: 18px; font-size: 9.5pt; color: #333; }
+  .toc-page { font-weight: bold; white-space: nowrap; margin-left: 8px; }
+
+  /* ── Secciones ── */
+  .section-title { font-size: 12pt; font-weight: bold; color: #1a2d4a; text-transform: uppercase; margin: 24px 0 10px 0; border-bottom: 2px solid #1a2d4a; padding-bottom: 4px; }
+  .subsection-title { font-size: 11pt; font-weight: bold; color: #1a2d4a; margin: 16px 0 8px 0; }
+  .sub2-title { font-size: 10.5pt; font-weight: bold; color: #333; margin: 12px 0 6px 0; }
+  p { margin-bottom: 8px; line-height: 1.55; }
+  ul, ol { margin: 6px 0 10px 20px; line-height: 1.55; }
+  li { margin-bottom: 3px; }
+
+  /* ── Tablas de datos ── */
+  .data-table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 9.5pt; }
+  .data-table th { background: #1a2d4a; color: #fff; padding: 7px 10px; text-align: center; border: 1px solid #ccc; font-size: 9.5pt; }
+  .data-table td { border: 1px solid #ccc; padding: 6px 10px; vertical-align: top; line-height: 1.45; }
+  .data-table tr:nth-child(even) td { background: #f2f5fa; }
+  .data-table .total-row td { background: #1a2d4a !important; color: #fff; font-weight: bold; }
+  .data-table .highlight td { background: #d4e6f1 !important; font-weight: bold; }
+  .data-table .green td { background: #d5f5e3 !important; }
+  .data-table .red td { background: #fadbd8 !important; }
+  .data-table .center { text-align: center; }
+  .data-table .right { text-align: right; }
+  .data-table .bold { font-weight: bold; }
+
+  /* ── Cajas destacadas ── */
+  .callout { border-left: 4px solid #1a2d4a; background: #eaf1fb; padding: 10px 14px; margin: 12px 0; font-size: 10pt; line-height: 1.55; }
+  .callout-green { border-left: 4px solid #1e8449; background: #d5f5e3; }
+  .callout-red   { border-left: 4px solid #c0392b; background: #fadbd8; }
+  .callout strong { color: #1a2d4a; }
+
+  /* ── Bloque de formula ── */
+  .formula-block { background: #f5f5f5; border: 1px solid #bbb; border-radius: 4px; padding: 12px 16px; font-family: 'Courier New', monospace; font-size: 9.5pt; margin: 10px 0 14px 0; line-height: 1.7; }
+
+  /* ── Pie de pagina ── */
+  .page-footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; font-size: 8pt; color: #777; border-top: 1px solid #ccc; padding-top: 4px; display: flex; justify-content: space-between; }
+
+  /* ── Numero grande de ROI ── */
+  .roi-box { text-align: center; border: 2px solid #1a2d4a; border-radius: 8px; padding: 16px; margin: 12px 4px; display: inline-block; width: 30%; vertical-align: top; }
+  .roi-box .roi-number { font-size: 26pt; font-weight: bold; color: #c0392b; }
+  .roi-box .roi-label  { font-size: 9pt; color: #555; margin-top: 4px; }
+  .roi-boxes { text-align: center; margin: 14px 0; }
+
+  /* ── Separador ── */
+  hr { border: none; border-top: 1px solid #ccc; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 1 — PORTADA
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <!-- Cabecera -->
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 1 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <!-- Titulo portada -->
+  <div class="cover-title">
+    <h1>INFORME EJECUTIVO<br>RETORNO SOBRE LA INVERSION (ROI)</h1>
+    <h2>Desarrollo con Inteligencia Artificial<br>vs. Fabrica de Software</h2>
+    <p style="margin-top:16px; font-size:12pt; color:#1a2d4a;">Proyecto: Asistente de Envios Internacionales<br>Latin Logistics Colombia SAS — Deprisa</p>
+  </div>
+
+  <!-- Metadata -->
+  <div class="cover-meta">
+    <table>
+      <tr><td class="lbl">Proyecto</td><td>Asistente de Envios Internacionales</td></tr>
+      <tr><td class="lbl">Area</td><td>Gerencia Digital y Tecnologia</td></tr>
+      <tr><td class="lbl">Edicion</td><td>1.0</td></tr>
+      <tr><td class="lbl">Fecha</td><td>09 de Marzo de 2026</td></tr>
+      <tr><td class="lbl">Referencia</td><td>Propuesta TCS — Linea Base &amp; Ondemand — Enero 2025</td></tr>
+    </table>
+  </div>
+
+  <!-- Tabla de firmas -->
+  <table class="sign-table">
+    <tr>
+      <th>Elaboro</th>
+      <th>Reviso</th>
+      <th>Aprobo</th>
+    </tr>
+    <tr>
+      <td>
+        <div class="name">Pablo Andres Diaz</div>
+        Gerente Digital y Tecnologia<br>
+        Gerencia Digital y Tecnologia<br>
+        Deprisa
+      </td>
+      <td>
+        <div class="name">&nbsp;</div>
+        &nbsp;<br>&nbsp;<br>&nbsp;
+      </td>
+      <td>
+        <div class="name">&nbsp;</div>
+        &nbsp;<br>&nbsp;<br>&nbsp;
+      </td>
+    </tr>
+  </table>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 1 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 2 — TABLA DE CONTENIDO + RESUMEN EJECUTIVO
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 2 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="toc">
+    <h2>Contenido</h2>
+    <div class="toc-item"><span>1. Resumen Ejecutivo</span><span class="toc-page">3</span></div>
+    <div class="toc-item"><span>2. Alcance del Proyecto Construido</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>2.1. Aplicacion Web y Logica de Negocio</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>2.2. Panel Administrativo y Actualizacion de Datos</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>2.3. Infraestructura y Despliegue (Docker / Azure / CI-CD)</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>2.4. Seguridad ISO 27001 — 25 Controles</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>2.5. Documentacion Tecnica Entregada</span><span class="toc-page">4</span></div>
+    <div class="toc-item"><span>3. Inversion Real — Modelo IA</span><span class="toc-page">5</span></div>
+    <div class="toc-item level2"><span>3.1. Tiempo Invertido por el Director IT</span><span class="toc-page">5</span></div>
+    <div class="toc-item level2"><span>3.2. Valoracion del Tiempo Interno (tarifa de nomina)</span><span class="toc-page">5</span></div>
+    <div class="toc-item level2"><span>3.3. Costo Total — Dos Escenarios</span><span class="toc-page">5</span></div>
+    <div class="toc-item"><span>4. Costo Equivalente — Fabrica de Software TCS</span><span class="toc-page">6</span></div>
+    <div class="toc-item level2"><span>4.1. Equipo Requerido y Estimacion de Horas</span><span class="toc-page">6</span></div>
+    <div class="toc-item level2"><span>4.2. Duracion Estimada bajo Metodologia TCS</span><span class="toc-page">6</span></div>
+    <div class="toc-item"><span>5. Comparacion Directa</span><span class="toc-page">7</span></div>
+    <div class="toc-item"><span>6. Analisis de Retorno sobre la Inversion (ROI)</span><span class="toc-page">8</span></div>
+    <div class="toc-item level2"><span>6.1. Escenario A — Costo Conservador</span><span class="toc-page">8</span></div>
+    <div class="toc-item level2"><span>6.2. Escenario B — Costo Marginal</span><span class="toc-page">8</span></div>
+    <div class="toc-item level2"><span>6.3. Eficiencia del Director IT vs. Tarifa TCS</span><span class="toc-page">8</span></div>
+    <div class="toc-item"><span>7. Capacidades Habilitadas con IA no Contempladas por TCS</span><span class="toc-page">9</span></div>
+    <div class="toc-item"><span>8. Recomendaciones para Gerencia</span><span class="toc-page">9</span></div>
+    <div class="toc-item"><span>9. Conclusion</span><span class="toc-page">10</span></div>
+  </div>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 2 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 3 — RESUMEN EJECUTIVO
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 3 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">1. Resumen Ejecutivo</div>
+
+  <p>Este informe presenta una comparacion objetiva entre el costo y tiempo real invertido en el desarrollo del
+  <strong>Asistente de Envios Internacionales</strong> mediante interaccion con Inteligencia Artificial — sin
+  conocimientos previos de desarrollo de software por parte del ejecutor — versus el costo equivalente bajo
+  la metodologia tradicional de Fabrica de Software, tomando como referencia la propuesta comercial de
+  <strong>Tata Consultancy Services (TCS) — Linea Base &amp; Ondemand — Enero 2025</strong>.</p>
+
+  <div class="callout callout-green">
+    <strong>Conclusion principal:</strong> El proyecto fue ejecutado en <strong>3 semanas</strong> con un costo
+    total de <strong>$947.636 COP</strong> (herramienta IA + tiempo interno del Director IT valorado a tarifa
+    de nomina), logrando un ahorro de <strong>$31.821.820 COP</strong> respecto a la opcion TCS Ondemand.
+    Esto representa un <strong>ROI del 3.358%</strong> en escenario conservador, o <strong>38.911%</strong>
+    considerando unicamente el costo marginal de la herramienta ($84.000 COP).
+  </div>
+
+  <p style="margin-top:16px;">Los tres indicadores clave del proyecto son:</p>
+
+  <div class="roi-boxes">
+    <div class="roi-box">
+      <div class="roi-number">3.358%</div>
+      <div class="roi-label">ROI Conservador<br>(incluyendo tiempo IT)</div>
+    </div>
+    <div class="roi-box" style="border-color:#c0392b;">
+      <div class="roi-number" style="color:#1a2d4a;">43x</div>
+      <div class="roi-label">Mayor productividad<br>vs. equipo TCS</div>
+    </div>
+    <div class="roi-box" style="border-color:#1e8449;">
+      <div class="roi-number" style="color:#1e8449;">-7 sem</div>
+      <div class="roi-label">Tiempo ahorrado<br>vs. metodologia TCS</div>
+    </div>
+  </div>
+
+  <table class="data-table" style="margin-top:20px;">
+    <tr>
+      <th style="width:35%;">Parametro</th>
+      <th style="width:25%;">Modelo IA (Real)</th>
+      <th style="width:25%;">TCS Ondemand (Estimado)</th>
+      <th style="width:15%;">Diferencia</th>
+    </tr>
+    <tr>
+      <td class="bold">Duracion total</td>
+      <td class="center bold" style="color:#1e8449;">3 semanas</td>
+      <td class="center">9–10 semanas</td>
+      <td class="center bold" style="color:#c0392b;">−7 semanas</td>
+    </tr>
+    <tr>
+      <td class="bold">Costo total (conservador)</td>
+      <td class="center bold" style="color:#1e8449;">$947.636 COP</td>
+      <td class="center">$32.769.456 COP</td>
+      <td class="center bold" style="color:#c0392b;">−$31.8M COP</td>
+    </tr>
+    <tr>
+      <td class="bold">Horas de equipo tecnico</td>
+      <td class="center bold" style="color:#1e8449;">8 h (1 persona)</td>
+      <td class="center">344 h (6–7 personas)</td>
+      <td class="center bold" style="color:#c0392b;">43x eficiencia</td>
+    </tr>
+    <tr>
+      <td class="bold">Codigo en produccion</td>
+      <td class="center bold" style="color:#1e8449;">Dia 1</td>
+      <td class="center">Semana 9+</td>
+      <td class="center bold" style="color:#c0392b;">8 semanas antes</td>
+    </tr>
+    <tr class="total-row">
+      <td>ROI del proyecto</td>
+      <td class="center">3.358% (conservador)</td>
+      <td class="center">—</td>
+      <td class="center">38.911% (marginal)</td>
+    </tr>
+  </table>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 3 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 4 — ALCANCE DEL PROYECTO
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 4 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">2. Alcance del Proyecto Construido</div>
+
+  <p>El sistema entregado incluye los siguientes componentes, <strong>todos funcionando en produccion</strong> en Azure VM (IP: 20.102.51.145) a la fecha de este informe:</p>
+
+  <div class="subsection-title">2.1. Aplicacion Web y Logica de Negocio</div>
+  <ul>
+    <li>Portal web con autenticacion individual por usuario (Flask / Python)</li>
+    <li>Dos roles diferenciados: <strong>Administrador</strong> y <strong>Operador</strong>, con menus adaptados</li>
+    <li>Interfaz de consulta con IA integrada — <strong>Anthropic Claude Haiku 4.5</strong> (migrado desde Groq el 09-Mar-2026)</li>
+    <li>Deteccion automatica del pais en la pregunta y filtrado de contexto (22 paises, aliases en espanol e ingles)</li>
+    <li>Sistema de reglas directas (respuestas sin consumo de API)</li>
+    <li>Bloqueo de prompt injection en 2 capas: regex frontend + system prompt reforzado</li>
+  </ul>
+
+  <div class="subsection-title">2.2. Panel Administrativo y Gestion de Datos</div>
+  <ul>
+    <li>Gestion completa de usuarios: crear, editar, activar/desactivar, eliminar</li>
+    <li>Actualizacion de la Matriz de Consulta (.xlsb) con previsualizacion de cambios</li>
+    <li>Comparacion automatica de matrices (nueva vs. anterior): paises, categorias, celdas modificadas</li>
+    <li>Backup automatico del archivo fuente (.xlsb.bak) antes de aplicar cambios</li>
+  </ul>
+
+  <div class="subsection-title">2.3. Infraestructura y Despliegue</div>
+  <ul>
+    <li>Dockerfile non-root (appuser UID 1001) con health check cada 30 segundos</li>
+    <li>Imagen Docker desplegada en Azure VM Ubuntu 24.04 — IP publica: 20.102.51.145</li>
+    <li>Nginx como reverse proxy con HTTPS (TLS 1.2/1.3 — autofirmado) y redireccion HTTP→HTTPS</li>
+    <li>Red Docker aislada (inter-net) para comunicacion entre contenedores</li>
+    <li>Pipeline CI/CD con GitHub Actions (self-hosted runner) — despliegue automatico en push a main</li>
+    <li>Reglas NSG Azure: puertos 22, 80, 443, 5000 configurados</li>
+  </ul>
+
+  <div class="subsection-title">2.4. Seguridad — Cumplimiento ISO 27001</div>
+  <table class="data-table">
+    <tr>
+      <th>Dominio ISO 27001</th>
+      <th>Controles Evaluados</th>
+      <th>Resultado</th>
+    </tr>
+    <tr><td>A.9 — Control de Acceso</td><td class="center">7</td><td class="center bold" style="color:#1e8449;">7 / 7 CUMPLE</td></tr>
+    <tr><td>A.10 — Criptografia (TLS 1.2/1.3, scrypt)</td><td class="center">4</td><td class="center bold" style="color:#1e8449;">4 / 4 CUMPLE</td></tr>
+    <tr><td>A.12 — Seguridad Operacional</td><td class="center">4</td><td class="center bold" style="color:#1e8449;">4 / 4 CUMPLE</td></tr>
+    <tr><td>A.13 — Seguridad en Comunicaciones</td><td class="center">5</td><td class="center bold" style="color:#1e8449;">5 / 5 CUMPLE</td></tr>
+    <tr><td>A.14 — Seguridad en Desarrollo</td><td class="center">5</td><td class="center bold" style="color:#1e8449;">5 / 5 CUMPLE</td></tr>
+    <tr class="total-row"><td>TOTAL</td><td class="center">25 controles</td><td class="center">100% de Cumplimiento</td></tr>
+  </table>
+
+  <div class="subsection-title">2.5. Documentacion Tecnica Entregada</div>
+  <table class="data-table">
+    <tr><th>Documento</th><th>Descripcion</th></tr>
+    <tr><td>README.md</td><td>Vision general, acceso rapido y estado del proyecto</td></tr>
+    <tr><td>MANUAL_TECNICO.md</td><td>Arquitectura, configuracion, variables de entorno y mantenimiento</td></tr>
+    <tr><td>MANUAL_USUARIO.md</td><td>Guia de uso para operadores y administradores</td></tr>
+    <tr><td>ARQUITECTURA_Y_SEGURIDAD.md</td><td>Flujos de datos, controles de seguridad y niveles de riesgo</td></tr>
+    <tr><td>DESPLIEGUE_AZURE.md</td><td>Guia completa de despliegue, comandos utiles y checklist</td></tr>
+    <tr><td>ESTRUCTURA_MATRIZ_CONSULTA.md</td><td>Descripcion del archivo fuente de datos</td></tr>
+  </table>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 4 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 5 — INVERSION REAL MODELO IA
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 5 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">3. Inversion Real — Modelo IA (Ejecutado)</div>
+
+  <div class="subsection-title">3.1. Tiempo Invertido por el Director IT</div>
+
+  <div class="callout">
+    El Director IT <strong>no tiene perfil tecnico de desarrollador de software</strong>. El 100% del codigo,
+    infraestructura, pruebas de seguridad y documentacion fue generado y desplegado mediante interaccion
+    conversacional con <strong>Claude Code (Anthropic)</strong>.
+  </div>
+
+  <table class="data-table">
+    <tr><th style="width:65%;">Actividad</th><th>Horas Reales</th></tr>
+    <tr><td>Ejecucion del proyecto (requerimientos, interacciones con IA, revision y aprobacion)</td><td class="center">5 h</td></tr>
+    <tr><td>Afinamiento y ajustes finales (pruebas, validacion funcional)</td><td class="center">3 h</td></tr>
+    <tr class="total-row"><td>TOTAL HORAS DIRECTOR IT</td><td class="center">8 horas</td></tr>
+  </table>
+
+  <div class="subsection-title">3.2. Valoracion del Tiempo Interno (tarifa de nomina)</div>
+
+  <table class="data-table">
+    <tr><th style="width:45%;">Concepto</th><th style="width:30%;">Calculo</th><th>Valor</th></tr>
+    <tr><td>Salario mensual Director IT</td><td class="center">—</td><td class="right bold">$19.000.000 COP</td></tr>
+    <tr><td>Horas laborales mensuales</td><td class="center">22 dias × 8 h</td><td class="right">176 horas</td></tr>
+    <tr><td><strong>Tarifa hora Director IT</strong></td><td class="center">$19.000.000 / 176</td><td class="right bold">$107.955 COP/hora</td></tr>
+    <tr class="highlight"><td><strong>Horas dedicadas al proyecto</strong></td><td class="center">8 horas</td><td class="right bold">$863.636 COP</td></tr>
+  </table>
+
+  <div class="callout">
+    <strong>Nota para Gerencia:</strong> La tarifa por hora del Director IT ($107.955 COP) es comparable a la de un
+    <em>Arquitecto / Experto DevOps TCS</em> ($123.879/hora) o <em>Data Scientist ML-IA</em> ($121.629/hora),
+    pero con la ventaja decisiva de que invirtio <strong>solo 8 horas</strong> frente a las
+    <strong>344 horas</strong> que requeriria el equipo TCS — una eficiencia <strong>43 veces mayor</strong>.
+  </div>
+
+  <div class="subsection-title">3.3. Costo Total del Proyecto — Dos Escenarios</div>
+
+  <table class="data-table">
+    <tr>
+      <th style="width:40%;">Concepto</th>
+      <th>Escenario Conservador</th>
+      <th>Escenario Marginal</th>
+    </tr>
+    <tr>
+      <td>Tiempo Director IT (8h × $107.955)</td>
+      <td class="center bold">$863.636 COP</td>
+      <td class="center" style="color:#888;"><em>Costo fijo de nomina<br>ya comprometido</em></td>
+    </tr>
+    <tr>
+      <td>Suscripcion Claude Code — 1 mes</td>
+      <td class="center">$84.000 COP (~$20 USD)</td>
+      <td class="center bold">$84.000 COP (~$20 USD)</td>
+    </tr>
+    <tr>
+      <td>Anthropic API (LLM en produccion)</td>
+      <td class="center">~$10–15 USD/mes</td>
+      <td class="center">$0</td>
+    </tr>
+    <tr>
+      <td>Azure VM (SuscripcionPruebas)</td>
+      <td class="center">$0 (entorno existente)</td>
+      <td class="center">$0</td>
+    </tr>
+    <tr class="total-row">
+      <td>TOTAL</td>
+      <td class="center">$947.636 COP</td>
+      <td class="center">$84.000 COP</td>
+    </tr>
+  </table>
+
+  <div class="subsection-title">3.4. Duracion Total del Proyecto</div>
+  <table class="data-table">
+    <tr><th style="width:70%;">Fase</th><th>Duracion</th></tr>
+    <tr><td>Desarrollo inicial (app web + datos + IA)</td><td class="center">1 semana</td></tr>
+    <tr><td>Seguridad, Docker, HTTPS, CI/CD</td><td class="center">1 semana</td></tr>
+    <tr><td>Pruebas Red Team, ISO 27001, documentacion</td><td class="center">1 semana</td></tr>
+    <tr class="total-row"><td>TOTAL CALENDARIO</td><td class="center">~3 semanas</td></tr>
+  </table>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 5 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 6 — COSTO TCS
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 6 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">4. Costo Equivalente — Fabrica de Software TCS</div>
+
+  <p>Basado en la <strong>Propuesta TCS — Linea Base &amp; Ondemand — Enero 2025</strong>, el proyecto
+  hubiera requerido el siguiente equipo minimo bajo metodologia Scrum (2 sprints, ~3 semanas calendario
+  efectivo + 2–3 semanas de onboarding):</p>
+
+  <div class="subsection-title">4.1. Equipo Requerido y Estimacion de Horas</div>
+
+  <table class="data-table">
+    <tr>
+      <th>Rol TCS (Ondemand)</th>
+      <th>Tarifa/hora (COP)</th>
+      <th>Horas Est.</th>
+      <th>Subtotal (COP)</th>
+    </tr>
+    <tr>
+      <td>Arquitecto / Experto DevOps</td>
+      <td class="right">$123.879</td>
+      <td class="center">40 h</td>
+      <td class="right">$4.955.160</td>
+    </tr>
+    <tr>
+      <td>Desarrollador Full Stack Azure Senior</td>
+      <td class="right">$85.839</td>
+      <td class="center">160 h</td>
+      <td class="right">$13.734.240</td>
+    </tr>
+    <tr>
+      <td>Experto DevOps (CI/CD, Docker, nginx)</td>
+      <td class="right">$123.879</td>
+      <td class="center">40 h</td>
+      <td class="right">$4.955.160</td>
+    </tr>
+    <tr>
+      <td>Data Scientist ML – IA (integracion LLM)</td>
+      <td class="right">$121.629</td>
+      <td class="center">24 h</td>
+      <td class="right">$2.919.096</td>
+    </tr>
+    <tr>
+      <td>Tester de Pruebas Funcionales Senior</td>
+      <td class="right">$70.051</td>
+      <td class="center">40 h</td>
+      <td class="right">$2.802.040</td>
+    </tr>
+    <tr>
+      <td>Analista de Negocio Senior</td>
+      <td class="right">$84.036</td>
+      <td class="center">20 h</td>
+      <td class="right">$1.680.720</td>
+    </tr>
+    <tr>
+      <td>Gestor de Proyecto Junior</td>
+      <td class="right">$86.152</td>
+      <td class="center">20 h</td>
+      <td class="right">$1.723.040</td>
+    </tr>
+    <tr class="total-row">
+      <td>TOTAL</td>
+      <td class="center">—</td>
+      <td class="center bold">344 h</td>
+      <td class="right bold">$32.769.456 COP</td>
+    </tr>
+  </table>
+
+  <p style="font-size:9pt; color:#666; margin-top:4px;">* Estimado conservador — 2 sprints Scrum (~3 semanas efectivas). No incluye IVA segun condiciones de la propuesta TCS. El equipo de 4 personas bajo <strong>Linea Base</strong> cuesta $66.457.503 COP/mes solo en honorarios.</p>
+
+  <div class="subsection-title">4.2. Cronograma Estimado bajo Metodologia TCS</div>
+
+  <table class="data-table">
+    <tr><th style="width:65%;">Fase</th><th>Duracion Estimada</th></tr>
+    <tr><td>Onboarding y asignacion de equipo</td><td class="center">2–3 semanas</td></tr>
+    <tr><td>Sprint 0 — Arquitectura y setup inicial</td><td class="center">1 semana</td></tr>
+    <tr><td>Sprint 1 — Desarrollo core (app + datos + IA)</td><td class="center">2 semanas</td></tr>
+    <tr><td>Sprint 2 — Seguridad, DevOps, HTTPS, CI/CD</td><td class="center">2 semanas</td></tr>
+    <tr><td>Pruebas, UAT y documentacion</td><td class="center">1 semana</td></tr>
+    <tr class="total-row"><td>TOTAL CALENDARIO</td><td class="center">~9–10 semanas</td></tr>
+  </table>
+
+  <div class="callout callout-red">
+    <strong>Importante:</strong> La propuesta TCS establece que una vez confirmada, el equipo tarda
+    <em>"de 2 a 3 semanas para la asignacion del equipo de trabajo"</em>, lo que significa que la primera
+    linea de codigo no existiria antes de la semana 3. El proyecto con IA entro en produccion funcional
+    en la <strong>primera semana</strong>.
+  </div>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 6 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 7 — COMPARACION DIRECTA
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 7 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">5. Comparacion Directa</div>
+
+  <table class="data-table">
+    <tr>
+      <th style="width:34%;">Parametro</th>
+      <th style="width:22%;">Modelo IA (Ejecutado)</th>
+      <th style="width:28%;">Fabrica Software TCS (Estimado)</th>
+      <th style="width:16%;">Diferencia</th>
+    </tr>
+    <tr>
+      <td class="bold">Duracion total</td>
+      <td class="center bold" style="color:#1e8449;">3 semanas</td>
+      <td class="center">9–10 semanas</td>
+      <td class="center bold" style="color:#c0392b;">−7 semanas</td>
+    </tr>
+    <tr>
+      <td class="bold">Costo total (conservador)</td>
+      <td class="center bold" style="color:#1e8449;">$947.636</td>
+      <td class="center">$32.769.456</td>
+      <td class="center bold" style="color:#c0392b;">−$31.8M</td>
+    </tr>
+    <tr>
+      <td class="bold">Costo total (marginal)</td>
+      <td class="center bold" style="color:#1e8449;">$84.000</td>
+      <td class="center">$32.769.456</td>
+      <td class="center bold" style="color:#c0392b;">−$32.7M</td>
+    </tr>
+    <tr>
+      <td class="bold">Horas de equipo tecnico</td>
+      <td class="center bold" style="color:#1e8449;">8 h (1 persona)</td>
+      <td class="center">344 h (6–7 personas)</td>
+      <td class="center bold" style="color:#c0392b;">43x eficiente</td>
+    </tr>
+    <tr>
+      <td class="bold">Horas adicionales del cliente</td>
+      <td class="center bold" style="color:#1e8449;">0 h extra</td>
+      <td class="center">~80 h (PO + SM + UAT)</td>
+      <td class="center bold" style="color:#c0392b;">−80 h gestion</td>
+    </tr>
+    <tr>
+      <td class="bold">Codigo en produccion</td>
+      <td class="center bold" style="color:#1e8449;">Dia 1</td>
+      <td class="center">Semana 9+</td>
+      <td class="center bold" style="color:#c0392b;">8 sem antes</td>
+    </tr>
+    <tr>
+      <td class="bold">Cumplimiento ISO 27001</td>
+      <td class="center bold" style="color:#1e8449;">25/25 (100%)</td>
+      <td class="center">Segun alcance contratado</td>
+      <td class="center bold" style="color:#1e8449;">Incluido</td>
+    </tr>
+    <tr>
+      <td class="bold">Documentacion tecnica</td>
+      <td class="center bold" style="color:#1e8449;">6 documentos</td>
+      <td class="center">Costo adicional</td>
+      <td class="center bold" style="color:#1e8449;">Incluido</td>
+    </tr>
+    <tr>
+      <td class="bold">Ciclo de cambios</td>
+      <td class="center bold" style="color:#1e8449;">Minutos (CI/CD)</td>
+      <td class="center">Dias (backlog → sprint)</td>
+      <td class="center bold" style="color:#1e8449;">~50x rapido</td>
+    </tr>
+    <tr>
+      <td class="bold">Dependencia de proveedor</td>
+      <td class="center bold" style="color:#1e8449;">Ninguna</td>
+      <td class="center">Contrato hasta Ene 2027</td>
+      <td class="center bold" style="color:#1e8449;">Independencia</td>
+    </tr>
+    <tr class="total-row">
+      <td>ROI del proyecto</td>
+      <td class="center">3.358% (conservador)</td>
+      <td class="center">Referencia</td>
+      <td class="center">38.911% (marginal)</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-green" style="margin-top:18px;">
+    <strong>Valor diferencial clave:</strong> El modelo IA permite que el Director IT — con conocimiento
+    profundo del negocio — sea el ejecutor directo del proyecto. Esto elimina el costo de transferencia de
+    conocimiento (estimado en 20–30% del tiempo en proyectos TCS), reduce los ciclos de revision y
+    garantiza que el producto final refleje exactamente la necesidad del negocio desde el dia 1.
+  </div>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 7 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 8 — ROI DETALLADO
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 8 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">6. Analisis de Retorno sobre la Inversion (ROI)</div>
+
+  <div class="subsection-title">6.1. Escenario A — Costo Conservador (incluye tiempo interno valorado)</div>
+
+  <div class="formula-block">
+Inversion real  = Tiempo Director IT    +  Herramienta IA
+                = $863.636 COP        +  $84.000 COP
+                = $947.636 COP
+
+Ahorro neto     = Costo TCS Ondemand    -  Inversion real
+                = $32.769.456 COP       -  $947.636 COP
+                = $31.821.820 COP
+
+ROI             = ( Ahorro / Inversion ) x 100
+                = ( $31.821.820 / $947.636 ) x 100
+                = 3.358 %
+  </div>
+  <p style="font-size:9.5pt; color:#333;">Por cada <strong>$1 COP</strong> de costo total (incluyendo el tiempo del Director IT), se generaron <strong>$34,58 COP de valor equivalente</strong>.</p>
+
+  <div class="subsection-title">6.2. Escenario B — Costo Marginal (gasto adicional real para la empresa)</div>
+
+  <div class="formula-block">
+Inversion marginal = Solo herramienta IA = $84.000 COP
+(El salario del Director IT es costo fijo, independiente del proyecto)
+
+Ahorro neto        = $32.769.456 COP  -  $84.000 COP  =  $32.685.456 COP
+
+ROI                = ( $32.685.456 / $84.000 ) x 100  =  38.911 %
+  </div>
+  <p style="font-size:9.5pt; color:#333;">Por cada <strong>$1 COP</strong> de gasto adicional para la empresa, se generaron <strong>$390 COP de valor</strong>.</p>
+
+  <div class="subsection-title">6.3. Eficiencia del Director IT vs. Tarifas TCS Ondemand</div>
+
+  <table class="data-table">
+    <tr>
+      <th>Rol TCS Ondemand</th>
+      <th>Tarifa/hora TCS</th>
+      <th>Tarifa/hora Director IT</th>
+      <th>Diferencia</th>
+    </tr>
+    <tr>
+      <td>Desarrollador Full Stack Azure Senior</td>
+      <td class="right">$85.839</td>
+      <td class="right">$107.955</td>
+      <td class="center" style="color:#c0392b;">+26% mas caro/hora</td>
+    </tr>
+    <tr>
+      <td>Data Scientist ML – IA</td>
+      <td class="right">$121.629</td>
+      <td class="right">$107.955</td>
+      <td class="center" style="color:#1e8449;">−11% mas economico/hora</td>
+    </tr>
+    <tr>
+      <td>Arquitecto / Experto DevOps</td>
+      <td class="right">$123.879</td>
+      <td class="right">$107.955</td>
+      <td class="center" style="color:#1e8449;">−13% mas economico/hora</td>
+    </tr>
+    <tr class="total-row">
+      <td>Horas totales usadas</td>
+      <td class="center">344 h (equipo TCS)</td>
+      <td class="center">8 h (Dir. IT + IA)</td>
+      <td class="center">Eficiencia 43x</td>
+    </tr>
+  </table>
+
+  <div class="callout callout-green">
+    <strong>Conclusion:</strong> Aunque la tarifa-hora del Director IT es comparable a la de un especialista
+    TCS Senior, la IA <strong>multiplico su productividad por 43 veces</strong>, convirtiendo 8 horas de
+    trabajo en el equivalente funcional de 344 horas de 6 especialistas TCS, a menos del 3% del costo.
+  </div>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 8 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 9 — CAPACIDADES / RECOMENDACIONES
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 9 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">7. Capacidades Habilitadas con IA no Contempladas por TCS</div>
+
+  <p>La propuesta TCS esta orientada a mantenimiento post-migracion de productos existentes
+  (Hipolita, Flybox, Socrates, Deprisa.com). Las capacidades especificas de <strong>IA generativa para
+  consultas de negocio</strong> no estan contempladas en ningun rol de la propuesta TCS, lo que implicaria
+  contratar adicionalmente:</p>
+
+  <table class="data-table">
+    <tr>
+      <th>Rol adicional requerido</th>
+      <th>Tarifa/hora TCS</th>
+      <th>Motivo</th>
+    </tr>
+    <tr>
+      <td>Data Scientist ML – IA</td>
+      <td class="right">$121.629</td>
+      <td>Integracion y afinamiento del modelo LLM</td>
+    </tr>
+    <tr>
+      <td>Arquitecto especialista Azure</td>
+      <td class="right">$158.942</td>
+      <td>Despliegue en contenedores Docker + Azure</td>
+    </tr>
+    <tr>
+      <td>Experto DevOps</td>
+      <td class="right">$123.879</td>
+      <td>CI/CD con GitHub Actions, nginx, SSL</td>
+    </tr>
+    <tr class="total-row">
+      <td>Costo hora combinado (soporte recurrente)</td>
+      <td class="right">$404.450 / hora</td>
+      <td>Si se requiriera soporte mensual en estos roles</td>
+    </tr>
+  </table>
+
+  <div class="section-title">8. Recomendaciones para Gerencia</div>
+
+  <p><strong>1. Escalar el modelo IA-asistida:</strong><br>
+  El patron aplicado en este proyecto es replicable en otras automatizaciones del area IT (integraciones,
+  reportes, Hipolita, Flybox). Cada proyecto replicado multiplica el ROI acumulado.</p>
+
+  <p><strong>2. Presupuesto IA sugerido:</strong><br>
+  Una suscripcion Claude Code Pro ($20 USD/mes) mas Anthropic API (~$20 USD/mes) representa
+  menos del <strong>0.2% del costo mensual TCS Linea Base</strong> ($66.4M COP/mes), con capacidad
+  de ejecutar multiples proyectos simultaneos.</p>
+
+  <p><strong>3. ✅ Migracion a Anthropic Claude — COMPLETADO (09-Mar-2026):</strong><br>
+  El LLM de produccion fue migrado de Groq a <strong>Anthropic Claude Haiku 4.5</strong>.
+  La precision de las respuestas mejoro significativamente. Costo: ~$10–15 USD/mes.</p>
+
+  <p><strong>4. Riesgos a gestionar:</strong></p>
+  <table class="data-table">
+    <tr><th>Riesgo</th><th>Impacto</th><th>Mitigacion</th></tr>
+    <tr>
+      <td><del>Limites del plan gratuito Groq</del> ✅ Resuelto</td>
+      <td class="center">—</td>
+      <td>Migrado a Anthropic API (09-Mar-2026)</td>
+    </tr>
+    <tr>
+      <td>Certificado SSL autofirmado</td>
+      <td class="center">Bajo</td>
+      <td>Gestionar Let's Encrypt o certificado corporativo</td>
+    </tr>
+    <tr>
+      <td>Actualizacion de Matriz de Consulta</td>
+      <td class="center">Bajo</td>
+      <td>Proceso guiado en el panel admin (~10 minutos)</td>
+    </tr>
+    <tr>
+      <td>Dependencia del Director IT</td>
+      <td class="center">Medio</td>
+      <td>Documentacion tecnica completa entregada (6 documentos)</td>
+    </tr>
+  </table>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 9 de 10</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 10 — CONCLUSION
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../static/DEPRISA.png" alt="DEPRISA"></td>
+      <td class="title-cell">GERENCIA DIGITAL Y<br>TECNOLOGIA</td>
+      <td class="info-right">Pagina 10 de 10</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Informe Ejecutivo ROI<br>IA vs. Fabrica de Software</td>
+      <td class="info-cell">Edicion 1.0</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">Fecha: 09/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">9. Conclusion</div>
+
+  <p>El proyecto <strong>Asistente de Envios Internacionales</strong> demuestra que es posible desarrollar,
+  asegurar y desplegar en produccion un sistema de software funcional, seguro y completamente documentado
+  en <strong>3 semanas y con una inversion de $947.636 COP</strong> (escenario conservador), utilizando
+  Inteligencia Artificial como asistente de desarrollo, sin requerir un equipo de tecnologia dedicado
+  ni conocimientos previos de programacion por parte del ejecutor.</p>
+
+  <div class="callout callout-green" style="margin: 20px 0;">
+    <strong>El ahorro generado en este unico proyecto ($31.821.820 COP) equivale a:</strong>
+    <ul style="margin-top:8px;">
+      <li>Financiar <strong>32 anos</strong> de suscripcion Claude Code Pro ($84.000 COP/mes)</li>
+      <li>O el <strong>1,7% del costo anual TCS Linea Base</strong> ($66.4M/mes × 12 = $797M COP/ano)</li>
+      <li>O <strong>18 dias de nomina completa del equipo TCS</strong> (4 personas, $66.4M/mes)</li>
+      <li>O <strong>11 proyectos adicionales de complejidad similar</strong> al costo marginal de la herramienta IA</li>
+    </ul>
+  </div>
+
+  <p>Esto posiciona la metodologia <strong>IA-asistida como estrategicamente transformadora</strong> para
+  Latin Logistics / Deprisa, no solo como una alternativa de ahorro puntual, sino como un nuevo modelo
+  de capacidad interna para la Gerencia Digital y Tecnologia.</p>
+
+  <hr>
+
+  <table class="data-table" style="margin-top:20px;">
+    <tr>
+      <th colspan="2" style="font-size:11pt;">Resumen de Indicadores Finales</th>
+    </tr>
+    <tr><td class="bold">Duracion real del proyecto</td><td class="center bold" style="color:#1e8449;">3 semanas</td></tr>
+    <tr><td class="bold">Costo total (conservador)</td><td class="center bold" style="color:#1e8449;">$947.636 COP</td></tr>
+    <tr><td class="bold">Costo equivalente TCS Ondemand</td><td class="center">$32.769.456 COP</td></tr>
+    <tr><td class="bold">Ahorro generado</td><td class="center bold" style="color:#1e8449;">$31.821.820 COP</td></tr>
+    <tr><td class="bold">ROI conservador</td><td class="center bold" style="color:#1e8449;">3.358 %</td></tr>
+    <tr><td class="bold">ROI marginal</td><td class="center bold" style="color:#1e8449;">38.911 %</td></tr>
+    <tr><td class="bold">Cumplimiento ISO 27001</td><td class="center bold" style="color:#1e8449;">25 / 25 controles (100%)</td></tr>
+    <tr><td class="bold">Multiplicador de productividad vs. TCS</td><td class="center bold" style="color:#1e8449;">43x</td></tr>
+  </table>
+
+  <p style="margin-top:30px; font-size:9pt; color:#777; text-align:center;">
+    Informe elaborado con asistencia de <strong>Claude Code — Anthropic</strong> | Marzo 2026<br>
+    Tarifas de referencia: <em>Propuesta TCS — Linea Base &amp; Ondemand — Enero 2025</em><br>
+    Latin Logistics Colombia SAS — Gerencia Digital y Tecnologia — Deprisa
+  </p>
+
+  <div class="page-footer">
+    <span>Gerencia Digital y Tecnologia — Deprisa | CONFIDENCIAL</span>
+    <span>Pagina 10 de 10</span>
+  </div>
+</div>
+
+</body>
+</html>

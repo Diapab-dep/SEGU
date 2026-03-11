@@ -53,13 +53,36 @@ async function main() {
 
   await prisma.user.upsert({
     where: { username: 'asesor_ato' },
-    update: {},
+    update: { role: 'advisor' },
     create: {
       username: 'asesor_ato',
       passwordHash: 'hash',
       email: 'asesor@example.com',
+      role: 'advisor',
       isDeprisacheckEnabled: true,
       pointOfSaleId: posAto.id,
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { username: 'supervisor' },
+    update: {},
+    create: {
+      username: 'supervisor',
+      passwordHash: 'hash',
+      email: 'supervisor@example.com',
+      role: 'supervisor',
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { username: 'admin' },
+    update: {},
+    create: {
+      username: 'admin',
+      passwordHash: 'hash',
+      email: 'admin@example.com',
+      role: 'admin',
     },
   });
 

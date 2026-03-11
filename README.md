@@ -143,6 +143,18 @@ docs/
 
 ---
 
+## Frontend (React)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+El frontend corre en **http://localhost:5173** y usa el proxy para comunicarse con la API en el puerto 3000. Asegúrese de que el backend esté corriendo.
+
+---
+
 ## Referencias
 
 - `proposal.md` — Propuesta y flujos de negocio (clasificación por selección explícita)
