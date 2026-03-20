@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manual de Usuario — DeprisaCheck</title>
+<title>Manual de Usuario — DeprisaCheck v1.1.1</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: Arial, sans-serif; font-size: 10.5pt; color: #1a1a1a; background: #fff; }
@@ -16,7 +16,7 @@
     @page { size: A4; margin: 0; }
   }
 
-  /* ── Cabecera de pagina (estilo RFP Deprisa) ── */
+  /* ── Cabecera de pagina ── */
   .page-header { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
   .page-header td { border: 1px solid #555; padding: 4px 8px; font-size: 9pt; vertical-align: middle; }
   .page-header .logo-cell { width: 120px; border: 1px solid #555; padding: 4px; text-align: center; }
@@ -26,44 +26,47 @@
   .page-header .info-right { font-weight: bold; font-size: 9pt; text-align: center; }
 
   /* ── Portada ── */
-  .cover-title { text-align: center; margin-top: 60px; margin-bottom: 40px; }
+  .cover-title { text-align: center; margin-top: 50px; margin-bottom: 36px; }
   .cover-title h1 { font-size: 22pt; font-weight: bold; color: #1a2d4a; line-height: 1.3; text-transform: uppercase; }
   .cover-title h2 { font-size: 14pt; color: #c0392b; margin-top: 10px; font-weight: bold; }
   .cover-title p  { font-size: 11pt; color: #555; margin-top: 8px; }
+  .cover-badge { display:inline-block; background:#1a2d4a; color:#fff; padding:4px 14px; border-radius:4px; font-size:10pt; margin-top:14px; font-weight:bold; }
 
-  .cover-meta { margin: 50px auto 0 auto; max-width: 480px; }
+  .cover-meta { margin: 40px auto 0 auto; max-width: 480px; }
   .cover-meta table { width: 100%; border-collapse: collapse; }
   .cover-meta td { border: 1px solid #999; padding: 7px 12px; font-size: 10pt; }
   .cover-meta .lbl { background: #1a2d4a; color: #fff; font-weight: bold; text-align: center; width: 40%; }
 
   /* ── TOC ── */
-  .toc { margin-top: 20px; }
-  .toc h2 { font-size: 13pt; color: #1a2d4a; font-weight: bold; text-transform: uppercase; margin-bottom: 14px; }
-  .toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; font-size: 10pt; border-bottom: 1px dotted #ccc; }
+  .toc { margin-top: 14px; }
+  .toc h2 { font-size: 12pt; color: #1a2d4a; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+  .toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 0; font-size: 10pt; border-bottom: 1px dotted #ccc; }
   .toc-item.level2 { padding-left: 18px; font-size: 9.5pt; color: #333; }
+  .toc-item.level3 { padding-left: 32px; font-size: 9pt; color: #555; }
   .toc-page { font-weight: bold; white-space: nowrap; margin-left: 8px; }
 
   /* ── Secciones ── */
-  .section-title { font-size: 12pt; font-weight: bold; color: #1a2d4a; text-transform: uppercase; margin: 24px 0 10px 0; border-bottom: 2px solid #1a2d4a; padding-bottom: 4px; }
-  .subsection-title { font-size: 11pt; font-weight: bold; color: #1a2d4a; margin: 16px 0 8px 0; }
-  .sub2-title { font-size: 10.5pt; font-weight: bold; color: #333; margin: 12px 0 6px 0; }
-  p { margin-bottom: 8px; line-height: 1.55; }
-  ul, ol { margin: 6px 0 10px 20px; line-height: 1.55; }
+  .section-title { font-size: 12pt; font-weight: bold; color: #1a2d4a; text-transform: uppercase; margin: 20px 0 8px 0; border-bottom: 2px solid #1a2d4a; padding-bottom: 4px; }
+  .subsection-title { font-size: 11pt; font-weight: bold; color: #1a2d4a; margin: 14px 0 6px 0; }
+  .sub2-title { font-size: 10.5pt; font-weight: bold; color: #333; margin: 10px 0 5px 0; }
+  p { margin-bottom: 7px; line-height: 1.55; }
+  ul, ol { margin: 5px 0 8px 20px; line-height: 1.55; }
   li { margin-bottom: 3px; }
+  code { background: #f0f0f0; border: 1px solid #ddd; padding: 1px 4px; border-radius: 3px; font-size: 9.5pt; font-family: 'Courier New', monospace; }
 
   /* ── Tablas de datos ── */
-  .data-table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 9.5pt; }
-  .data-table th { background: #1a2d4a; color: #fff; padding: 7px 10px; text-align: left; border: 1px solid #ccc; font-size: 9.5pt; }
-  .data-table td { border: 1px solid #ccc; padding: 6px 10px; vertical-align: top; line-height: 1.45; }
+  .data-table { width: 100%; border-collapse: collapse; margin: 8px 0 14px 0; font-size: 9.5pt; }
+  .data-table th { background: #1a2d4a; color: #fff; padding: 6px 10px; text-align: left; border: 1px solid #ccc; font-size: 9.5pt; }
+  .data-table td { border: 1px solid #ccc; padding: 5px 9px; vertical-align: top; line-height: 1.45; }
   .data-table tr:nth-child(even) td { background: #f2f5fa; }
-  .data-table .total-row td { background: #1a2d4a !important; color: #fff; font-weight: bold; }
   .data-table .center { text-align: center; }
   .data-table .bold { font-weight: bold; }
 
   /* ── Cajas destacadas ── */
-  .callout { border-left: 4px solid #1a2d4a; background: #eaf1fb; padding: 10px 14px; margin: 12px 0; font-size: 10pt; line-height: 1.55; }
+  .callout { border-left: 4px solid #1a2d4a; background: #eaf1fb; padding: 8px 12px; margin: 10px 0; font-size: 10pt; line-height: 1.55; }
   .callout-green { border-left: 4px solid #1e8449; background: #d5f5e3; }
   .callout-red   { border-left: 4px solid #c0392b; background: #fadbd8; }
+  .callout-orange{ border-left: 4px solid #d35400; background: #fef9e7; }
   .callout strong { color: #1a2d4a; }
 
   /* ── Pie de pagina ── */
@@ -71,10 +74,17 @@
 
   /* ── Numeracion pasos ── */
   .step-list { counter-reset: step; }
-  .step-list li { list-style: none; margin-left: 0; padding-left: 28px; position: relative; margin-bottom: 6px; }
+  .step-list li { list-style: none; margin-left: 0; padding-left: 28px; position: relative; margin-bottom: 5px; }
   .step-list li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; background: #1a2d4a; color: #fff; width: 20px; height: 20px; border-radius: 50%; text-align: center; line-height: 20px; font-size: 9pt; font-weight: bold; }
 
-  hr { border: none; border-top: 1px solid #ccc; margin: 16px 0; }
+  /* ── Badge de estado ── */
+  .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:8.5pt; font-weight:bold; }
+  .badge-pending  { background:#fff3cd; color:#856404; }
+  .badge-check    { background:#cce5ff; color:#004085; }
+  .badge-accepted { background:#d4edda; color:#155724; }
+  .badge-rejected { background:#f8d7da; color:#721c24; }
+
+  hr { border: none; border-top: 1px solid #ccc; margin: 14px 0; }
 </style>
 </head>
 <body>
@@ -87,11 +97,11 @@
     <tr>
       <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
       <td class="title-cell">PROCESO DE ADMISION<br>DE MERCANCIA</td>
-      <td class="info-right">Pagina 1 de 6</td>
+      <td class="info-right">Pagina 1 de 8</td>
     </tr>
     <tr>
       <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
-      <td class="info-cell">Version 1.0</td>
+      <td class="info-cell">Version 1.1.1</td>
     </tr>
     <tr>
       <td class="info-cell">&nbsp;</td>
@@ -102,14 +112,15 @@
   <div class="cover-title">
     <h1>MANUAL DE USUARIO<br>DEPRISACHECK</h1>
     <h2>Plataforma de admision de mercancia<br>en puntos de venta Ciudad y Aeropuerto</h2>
-    <p style="margin-top:16px; font-size:12pt; color:#1a2d4a;">Documento para validar el funcionamiento de la aplicacion</p>
+    <p style="margin-top:16px; font-size:12pt; color:#1a2d4a;">Control operativo, cumplimiento y listas de comprobacion</p>
+    <span class="cover-badge">Version 1.1.1</span>
   </div>
 
   <div class="cover-meta">
     <table>
       <tr><td class="lbl">Proyecto</td><td>DeprisaCheck</td></tr>
       <tr><td class="lbl">Area</td><td>Gerencia Digital y Tecnologia</td></tr>
-      <tr><td class="lbl">Version</td><td>1.0</td></tr>
+      <tr><td class="lbl">Version</td><td>1.1.1 — Seguridad y modulos completos</td></tr>
       <tr><td class="lbl">Fecha</td><td>19 de Marzo de 2026</td></tr>
       <tr><td class="lbl">Referencia</td><td>Proceso de admision DeprisaDocs — Ciudad y ATO</td></tr>
     </table>
@@ -117,7 +128,7 @@
 
   <div class="page-footer">
     <span>Latin Logistics Colombia SAS — Deprisa</span>
-    <span>Pagina 1 de 6</span>
+    <span>Pagina 1 de 8</span>
   </div>
 </div>
 
@@ -130,11 +141,11 @@
     <tr>
       <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
       <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
-      <td class="info-right">Pagina 2 de 6</td>
+      <td class="info-right">Pagina 2 de 8</td>
     </tr>
     <tr>
       <td class="title-cell">Proceso de admision de mercancia</td>
-      <td class="info-cell">Version 1.0</td>
+      <td class="info-cell">Version 1.1.1</td>
     </tr>
     <tr>
       <td class="info-cell">&nbsp;</td>
@@ -148,74 +159,81 @@
     <div class="toc-item"><span>2. Acceso al sistema</span><span class="toc-page">2</span></div>
     <div class="toc-item level2"><span>2.1. URL de acceso</span><span class="toc-page">2</span></div>
     <div class="toc-item level2"><span>2.2. Inicio de sesion</span><span class="toc-page">2</span></div>
-    <div class="toc-item"><span>3. Validacion por rol</span><span class="toc-page">3</span></div>
-    <div class="toc-item level2"><span>3.1. Rol Asesor</span><span class="toc-page">3</span></div>
-    <div class="toc-item level2"><span>3.2. Rol Supervisor</span><span class="toc-page">4</span></div>
-    <div class="toc-item level2"><span>3.3. Rol Administrador</span><span class="toc-page">4</span></div>
-    <div class="toc-item"><span>4. Datos de prueba</span><span class="toc-page">5</span></div>
-    <div class="toc-item"><span>5. Checklist de validacion</span><span class="toc-page">5</span></div>
-    <div class="toc-item"><span>6. Solucion de problemas</span><span class="toc-page">5</span></div>
-    <div class="toc-item"><span>7. Glosario</span><span class="toc-page">6</span></div>
+    <div class="toc-item"><span>3. Rol: Asesor</span><span class="toc-page">3</span></div>
+    <div class="toc-item level2"><span>3.1. Nueva Admision</span><span class="toc-page">3</span></div>
+    <div class="toc-item level2"><span>3.2. DeprisaCheck — Lista de comprobacion</span><span class="toc-page">3</span></div>
+    <div class="toc-item"><span>4. Rol: Supervisor</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>4.1. Panel de metricas</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>4.2. Filtros y tabla de admisiones</span><span class="toc-page">4</span></div>
+    <div class="toc-item level2"><span>4.3. Detalle de admision</span><span class="toc-page">4</span></div>
+    <div class="toc-item"><span>5. Rol: Administrador — Usuarios</span><span class="toc-page">5</span></div>
+    <div class="toc-item level2"><span>5.1. Crear, editar, activar/desactivar</span><span class="toc-page">5</span></div>
+    <div class="toc-item level2"><span>5.2. Cambio de contrasena</span><span class="toc-page">5</span></div>
+    <div class="toc-item"><span>6. Rol: Administrador — Gestion Operativa</span><span class="toc-page">6</span></div>
+    <div class="toc-item level2"><span>6.1. Puntos de Venta</span><span class="toc-page">6</span></div>
+    <div class="toc-item level2"><span>6.2. Plantillas de Checklist</span><span class="toc-page">6</span></div>
+    <div class="toc-item level2"><span>6.3. Restricciones de Clientes</span><span class="toc-page">6</span></div>
+    <div class="toc-item"><span>7. Datos de prueba y checklist de validacion</span><span class="toc-page">7</span></div>
+    <div class="toc-item"><span>8. Solucion de problemas y Glosario</span><span class="toc-page">8</span></div>
   </div>
 
   <div class="section-title">1. Introduccion</div>
 
-  <p>DeprisaCheck es la herramienta para gestionar el proceso de admision de mercancia en puntos de venta ciudad y aeropuerto (ATO). Permite:</p>
+  <p>DeprisaCheck es la herramienta integral para gestionar el proceso de admision de mercancia en puntos de venta ciudad y aeropuerto (ATO). La plataforma cubre todo el ciclo operativo:</p>
   <ul>
-    <li>Iniciar admisiones de mercancia</li>
-    <li>Diligenciar listas de comprobacion para mercancia peligrosa o especial (DeprisaCheck)</li>
-    <li>Supervisar operaciones (supervisor/admin)</li>
-    <li>Gestionar usuarios (solo administrador)</li>
+    <li>Iniciar y registrar admisiones de mercancia</li>
+    <li>Diligenciar listas de comprobacion para mercancia peligrosa o especial</li>
+    <li>Supervisar operaciones con metricas, filtros y detalle de cada admision</li>
+    <li>Gestionar usuarios, puntos de venta, plantillas de checklist y restricciones de clientes</li>
   </ul>
 
   <div class="subsection-title">Roles de usuario</div>
   <table class="data-table">
     <tr><th>Rol</th><th>Descripcion</th><th>Modulos disponibles</th></tr>
-    <tr><td class="bold">Asesor</td><td>Operador de admision</td><td>Nueva Admision, DeprisaCheck</td></tr>
-    <tr><td class="bold">Supervisor</td><td>Monitoreo operativo</td><td>Supervision</td></tr>
-    <tr><td class="bold">Administrador</td><td>Gestion completa</td><td>Supervision, Usuarios</td></tr>
+    <tr><td class="bold">Asesor</td><td>Operador de admision en punto de venta</td><td>Nueva Admision, DeprisaCheck</td></tr>
+    <tr><td class="bold">Supervisor</td><td>Monitoreo operativo</td><td>Panel de Supervision, Detalle de admisiones</td></tr>
+    <tr><td class="bold">Administrador</td><td>Gestion completa del sistema</td><td>Todos los modulos + Usuarios, Puntos de Venta, Plantillas, Restricciones</td></tr>
   </table>
 
   <div class="section-title">2. Acceso al sistema</div>
 
   <div class="subsection-title">2.1. URL de acceso</div>
   <ul>
-    <li><strong>Aplicacion:</strong> <code>http://localhost:5173</code></li>
-    <li><strong>API:</strong> <code>http://localhost:3005</code> (segun configuracion)</li>
+    <li><strong>Aplicacion:</strong> <code>http://localhost:5173</code> (desarrollo) o la URL de produccion asignada</li>
+    <li><strong>API:</strong> <code>http://localhost:3000</code></li>
   </ul>
 
   <div class="subsection-title">2.2. Inicio de sesion</div>
   <ol class="step-list">
     <li>Abra la URL de la aplicacion en el navegador.</li>
-    <li>En la pantalla de login: <strong>Usuario:</strong> ingrese cualquier nombre (ej.: asesor, admin, supervisor).</li>
-    <li><strong>Rol:</strong> seleccione el rol con el que desea probar (Asesor, Supervisor, Administrador).</li>
+    <li>Ingrese su <strong>Usuario</strong> y <strong>Contrasena</strong> registrados.</li>
     <li>Haga clic en <strong>Entrar</strong>.</li>
   </ol>
 
   <div class="callout">
-    <strong>Nota:</strong> La aplicacion no valida credenciales contra base de datos en esta version. El rol seleccionado determina los modulos visibles.
+    <strong>Seguridad del login:</strong> El sistema verifica las credenciales contra la base de datos con contrasenas cifradas (bcrypt). El acceso tiene un limite de <strong>10 intentos por IP cada 15 minutos</strong> para prevenir ataques automatizados. Los usuarios inactivos no pueden iniciar sesion.
   </div>
 
   <div class="page-footer">
     <span>Latin Logistics Colombia SAS — Deprisa</span>
-    <span>Pagina 2 de 6</span>
+    <span>Pagina 2 de 8</span>
   </div>
 </div>
 
 
 <!-- ══════════════════════════════════════════════════════════
-     PAGINA 3 — VALIDACION ROL ASESOR
+     PAGINA 3 — ROL ASESOR
 ══════════════════════════════════════════════════════════ -->
 <div class="page">
   <table class="page-header">
     <tr>
       <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
       <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
-      <td class="info-right">Pagina 3 de 6</td>
+      <td class="info-right">Pagina 3 de 8</td>
     </tr>
     <tr>
       <td class="title-cell">Proceso de admision de mercancia</td>
-      <td class="info-cell">Version 1.0</td>
+      <td class="info-cell">Version 1.1.1</td>
     </tr>
     <tr>
       <td class="info-cell">&nbsp;</td>
@@ -223,63 +241,68 @@
     </tr>
   </table>
 
-  <div class="section-title">3. Validacion por rol</div>
+  <div class="section-title">3. Rol: Asesor</div>
 
-  <div class="subsection-title">3.1. Rol: Asesor</div>
+  <p><strong>Dashboard:</strong> muestra las tarjetas <em>Nueva Admision</em> y <em>DeprisaCheck</em>. Menu lateral: Inicio, Admision, DeprisaCheck.</p>
 
-  <div class="sub2-title">Dashboard</div>
-  <p>Debe mostrar: <strong>Nueva Admision</strong> y <strong>DeprisaCheck</strong>. Menu lateral: Inicio, Admision, DeprisaCheck.</p>
-
-  <div class="sub2-title">Prueba: Nueva Admision (mercancia estandar)</div>
+  <div class="subsection-title">3.1. Nueva Admision</div>
   <ol class="step-list">
-    <li>Ir a <strong>Nueva Admision</strong>.</li>
-    <li>Completar: ID Cliente <code>client-1</code>, Tipo de mercancia: Mercancia estandar, Punto de venta: Punto Ciudad 1 o Punto ATO 1.</li>
+    <li>Ir a <strong>Nueva Admision</strong> desde el menu o dashboard.</li>
+    <li>Completar el formulario:<br>
+      — <strong>ID Cliente:</strong> identificador del cliente (ej.: <code>client-1</code>)<br>
+      — <strong>Tipo de mercancia:</strong> seleccione de la lista. Los tipos que requieren DeprisaCheck aparecen con la etiqueta <em>(Requiere DeprisaCheck)</em><br>
+      — <strong>Punto de venta:</strong> seleccione el punto de venta de la lista dinamica</li>
     <li>Clic en <strong>Iniciar admision</strong>.</li>
-    <li><strong>Resultado esperado:</strong> Estado <em>pending</em>, ID de mercancia mostrado.</li>
   </ol>
 
-  <div class="sub2-title">Prueba: Nueva Admision (mercancia peligrosa — DeprisaCheck)</div>
-  <ol class="step-list">
-    <li>Ir a <strong>Nueva Admision</strong>.</li>
-    <li>Completar: ID Cliente <code>client-1</code>, Tipo: Baterias de litio (Requiere DeprisaCheck), Punto de venta: Punto ATO 1.</li>
-    <li>Clic en <strong>Iniciar admision</strong>.</li>
-    <li><strong>Resultado esperado:</strong> Redireccion automatica a DeprisaCheck con la mercancia creada.</li>
-  </ol>
+  <p><strong>Resultados posibles:</strong></p>
+  <table class="data-table">
+    <tr><th>Estado</th><th>Descripcion</th><th>Accion del sistema</th></tr>
+    <tr><td><span class="badge badge-pending">pending</span></td><td>Admision registrada, en espera</td><td>Muestra ID de mercancia</td></tr>
+    <tr><td><span class="badge badge-check">requires_deprisacheck</span></td><td>Mercancia peligrosa o especial</td><td>Redirige automaticamente a DeprisaCheck</td></tr>
+    <tr><td><span class="badge badge-rejected">rejected</span></td><td>Rechazada por restriccion</td><td>Muestra razon de rechazo</td></tr>
+  </table>
 
-  <div class="sub2-title">Prueba: DeprisaCheck — Lista de comprobacion</div>
+  <div class="subsection-title">3.2. DeprisaCheck — Lista de comprobacion</div>
+
+  <p>Acceso automatico al admitir mercancia peligrosa, o manualmente desde el menu con un ID de mercancia y tipo.</p>
+
   <ol class="step-list">
-    <li>Acceder desde el flujo anterior (mercancia peligrosa) o desde DeprisaCheck con parametros en URL.</li>
-    <li>Verificar que se muestre el nombre de la plantilla (ej.: Lista Baterias de Litio).</li>
-    <li>Marcar los items obligatorios (con asterisco *).</li>
-    <li>Clic en <strong>Guardar lista</strong>.</li>
-    <li>Clic en <strong>Enviar para aceptacion</strong>.</li>
-    <li><strong>Resultado esperado:</strong> Mensaje &quot;Proceso completado.&quot;</li>
+    <li>La lista de comprobacion se carga automaticamente segun el tipo de mercancia y punto de venta.</li>
+    <li>Marque cada item de la lista. Los <strong>items obligatorios</strong> estan marcados con asterisco (*).</li>
+    <li>Clic en <strong>Guardar lista</strong> para preservar el progreso.</li>
+    <li>Clic en <strong>Enviar para aceptacion</strong> para finalizar el proceso.</li>
+    <li><strong>Resultado esperado:</strong> mensaje &quot;Proceso completado.&quot;</li>
   </ol>
 
   <div class="callout callout-red">
-    <strong>Casos de rechazo:</strong> Sin tipo de mercancia el formulario no debe enviar (validacion HTML5). Restricciones de cliente/punto de venta pueden devolver rechazo con mensaje desde la API.
+    <strong>Casos de rechazo:</strong> Si el cliente tiene restricciones para el tipo de mercancia seleccionado, la admision sera rechazada automaticamente con un mensaje descriptivo. Sin tipo de mercancia, el formulario no permite enviar.
+  </div>
+
+  <div class="callout callout-green">
+    <strong>Acceso manual a DeprisaCheck:</strong> Si necesita retomar una lista, ingrese directamente al modulo <em>DeprisaCheck</em>, proporcione el ID de la mercancia y seleccione el tipo. El sistema cargara la plantilla correspondiente.
   </div>
 
   <div class="page-footer">
     <span>Latin Logistics Colombia SAS — Deprisa</span>
-    <span>Pagina 3 de 6</span>
+    <span>Pagina 3 de 8</span>
   </div>
 </div>
 
 
 <!-- ══════════════════════════════════════════════════════════
-     PAGINA 4 — ROL SUPERVISOR Y ADMINISTRADOR
+     PAGINA 4 — ROL SUPERVISOR
 ══════════════════════════════════════════════════════════ -->
 <div class="page">
   <table class="page-header">
     <tr>
       <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
       <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
-      <td class="info-right">Pagina 4 de 6</td>
+      <td class="info-right">Pagina 4 de 8</td>
     </tr>
     <tr>
       <td class="title-cell">Proceso de admision de mercancia</td>
-      <td class="info-cell">Version 1.0</td>
+      <td class="info-cell">Version 1.1.1</td>
     </tr>
     <tr>
       <td class="info-cell">&nbsp;</td>
@@ -287,73 +310,143 @@
     </tr>
   </table>
 
-  <div class="subsection-title">3.2. Rol: Supervisor</div>
+  <div class="section-title">4. Rol: Supervisor</div>
 
-  <div class="sub2-title">Dashboard</div>
-  <p>Debe mostrar: <strong>Supervision</strong>. Menu lateral: Inicio, Supervision.</p>
+  <p><strong>Dashboard:</strong> muestra la tarjeta <em>Supervision</em>. Menu lateral: Inicio, Supervision.</p>
 
-  <div class="sub2-title">Prueba: Panel de Supervision</div>
+  <div class="subsection-title">4.1. Panel de metricas</div>
+
+  <p>Al ingresar al modulo <strong>Supervision</strong>, la parte superior muestra contadores en tiempo real:</p>
+  <table class="data-table">
+    <tr><th>Metrica</th><th>Descripcion</th></tr>
+    <tr><td class="bold">Total</td><td>Numero total de admisiones en el periodo seleccionado</td></tr>
+    <tr><td class="bold">Pendientes</td><td>Admisiones registradas aun sin procesar</td></tr>
+    <tr><td class="bold">DeprisaCheck</td><td>Admisiones que requieren lista de comprobacion</td></tr>
+    <tr><td class="bold">Aceptadas</td><td>Admisiones completadas satisfactoriamente</td></tr>
+    <tr><td class="bold">Rechazadas</td><td>Admisiones rechazadas por restricciones o incumplimiento</td></tr>
+  </table>
+
+  <div class="subsection-title">4.2. Filtros y tabla de admisiones</div>
+
+  <p>Debajo de las metricas, use la <strong>barra de filtros</strong> para refinar los resultados:</p>
+  <ul>
+    <li><strong>Rango de fecha:</strong> Hoy / Esta semana / Rango personalizado (desde–hasta)</li>
+    <li><strong>Punto de venta:</strong> filtra por POS especifico</li>
+    <li><strong>Tipo de mercancia:</strong> filtra por tipo</li>
+    <li><strong>Estado:</strong> pendiente / deprisacheck / aceptada / rechazada</li>
+  </ul>
+
+  <p>La tabla muestra: fecha, cliente, tipo de mercancia, punto de venta y estado con indicador de color. Puede navegar entre paginas con los controles de paginacion.</p>
+
+  <div class="subsection-title">4.3. Detalle de admision</div>
+
   <ol class="step-list">
-    <li>Ir a <strong>Supervision</strong>.</li>
-    <li><strong>Resultado esperado:</strong> Pantalla de bienvenida y mensaje de funcionalidad en desarrollo (listado de admisiones pendiente).</li>
+    <li>Haga clic en cualquier fila de la tabla de admisiones.</li>
+    <li>Se abre la pagina de <strong>Detalle de Admision</strong> con:
+      <ul>
+        <li>Datos del cliente, punto de venta, tipo de mercancia y fecha</li>
+        <li><strong>Indicador de flujo visual:</strong> muestra el estado actual en la secuencia Pendiente → DeprisaCheck → Aceptada / Rechazada</li>
+        <li>Razon de rechazo (destacada en rojo, si aplica)</li>
+        <li>Checklist completado con todas las preguntas y respuestas</li>
+      </ul>
+    </li>
   </ol>
 
-  <hr>
+  <div class="callout">
+    <strong>Nota:</strong> El supervisor puede <strong>ver pero no modificar</strong> ninguna admision. La informacion es de solo lectura para garantizar la trazabilidad del proceso.
+  </div>
 
-  <div class="subsection-title">3.3. Rol: Administrador</div>
+  <div class="page-footer">
+    <span>Latin Logistics Colombia SAS — Deprisa</span>
+    <span>Pagina 4 de 8</span>
+  </div>
+</div>
 
-  <div class="sub2-title">Dashboard</div>
-  <p>Debe mostrar: <strong>Supervision</strong> y <strong>Usuarios</strong>. Menu lateral: Inicio, Supervision, Usuarios.</p>
 
-  <div class="sub2-title">Prueba: Modulo de Usuarios</div>
-  <ol class="step-list">
-    <li>Ir a <strong>Usuarios</strong>.</li>
-    <li>Verificar tabla con usuarios existentes (Usuario, Email, Rol, DeprisaCheck, Acciones).</li>
-  </ol>
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 5 — ADMIN: USUARIOS
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
+      <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
+      <td class="info-right">Pagina 5 de 8</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Proceso de admision de mercancia</td>
+      <td class="info-cell">Version 1.1.1</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">19/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">5. Rol: Administrador — Modulo Usuarios</div>
+
+  <p><strong>Dashboard admin:</strong> muestra 7 tarjetas: Nueva Admision, DeprisaCheck, Supervision, <strong>Usuarios, Puntos de Venta, Plantillas de Checklist, Restricciones de Clientes</strong>.</p>
+
+  <div class="subsection-title">5.1. Crear, editar y activar/desactivar usuarios</div>
+
+  <p>Ir a <strong>Usuarios</strong>. La tabla muestra: Usuario, Email, Rol, POS asignado, DeprisaCheck, Estado, Acciones.</p>
 
   <div class="sub2-title">Crear usuario</div>
   <ol class="step-list">
     <li>Clic en <strong>Nuevo usuario</strong>.</li>
-    <li>Completar: Usuario, Contrasena, Email, Rol, Habilitado para DeprisaCheck (opcional).</li>
-    <li>Clic en <strong>Crear</strong>.</li>
-    <li><strong>Resultado esperado:</strong> Usuario nuevo en la tabla.</li>
+    <li>Completar: usuario, contrasena (minimo 6 caracteres), email, rol, punto de venta asignado, habilitado para DeprisaCheck.</li>
+    <li>Clic en <strong>Crear</strong>. La contrasena se almacena cifrada (bcrypt).</li>
+    <li><strong>Resultado esperado:</strong> usuario nuevo en la tabla con estado Activo.</li>
   </ol>
 
   <div class="sub2-title">Editar usuario</div>
   <ol class="step-list">
     <li>Clic en <strong>Editar</strong> en la fila del usuario.</li>
-    <li>Modificar campos (excepto Usuario).</li>
+    <li>Modificar campos (email, rol, punto de venta, habilitacion DeprisaCheck). El nombre de usuario no se puede cambiar.</li>
     <li>Clic en <strong>Guardar</strong>.</li>
-    <li><strong>Resultado esperado:</strong> Cambios reflejados en la tabla.</li>
   </ol>
 
-  <div class="sub2-title">Eliminar usuario</div>
+  <div class="sub2-title">Activar / Desactivar usuario</div>
   <ol class="step-list">
-    <li>Clic en <strong>Eliminar</strong>.</li>
-    <li>Confirmar en el cuadro de dialogo.</li>
-    <li><strong>Resultado esperado:</strong> Usuario eliminado de la tabla.</li>
+    <li>Clic en <strong>Desactivar</strong> o <strong>Activar</strong> en la fila del usuario.</li>
+    <li>El usuario desactivado no puede iniciar sesion. Su historial de admisiones se conserva.</li>
   </ol>
+
+  <div class="callout callout-orange">
+    <strong>Importante:</strong> Los usuarios no se eliminan fisicamente — se desactivan (soft delete). Esto preserva la integridad del historial de admisiones. Para eliminar permanentemente contacte al administrador del sistema.
+  </div>
+
+  <div class="subsection-title">5.2. Cambio de contrasena</div>
+  <ol class="step-list">
+    <li>En la fila del usuario, clic en <strong>Cambiar contrasena</strong>.</li>
+    <li>Ingresar la nueva contrasena (minimo 6 caracteres).</li>
+    <li>Clic en <strong>Guardar</strong>. La contrasena se actualiza cifrada con bcrypt.</li>
+  </ol>
+
+  <div class="callout callout-green">
+    <strong>Migracion de contrasenas:</strong> Los usuarios creados en versiones anteriores con contrasenas en formato legacy podran iniciar sesion normalmente — el sistema detecta y valida el formato automaticamente.
+  </div>
 
   <div class="page-footer">
     <span>Latin Logistics Colombia SAS — Deprisa</span>
-    <span>Pagina 4 de 6</span>
+    <span>Pagina 5 de 8</span>
   </div>
 </div>
 
 
 <!-- ══════════════════════════════════════════════════════════
-     PAGINA 5 — DATOS DE PRUEBA Y CHECKLIST
+     PAGINA 6 — ADMIN: GESTION OPERATIVA
 ══════════════════════════════════════════════════════════ -->
 <div class="page">
   <table class="page-header">
     <tr>
       <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
       <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
-      <td class="info-right">Pagina 5 de 6</td>
+      <td class="info-right">Pagina 6 de 8</td>
     </tr>
     <tr>
       <td class="title-cell">Proceso de admision de mercancia</td>
-      <td class="info-cell">Version 1.0</td>
+      <td class="info-cell">Version 1.1.1</td>
     </tr>
     <tr>
       <td class="info-cell">&nbsp;</td>
@@ -361,14 +454,94 @@
     </tr>
   </table>
 
-  <div class="section-title">4. Datos de prueba (seed)</div>
+  <div class="section-title">6. Rol: Administrador — Gestion Operativa</div>
+
+  <div class="subsection-title">6.1. Puntos de Venta</div>
+  <p>Ir a <strong>Puntos de Venta</strong> en el dashboard. La tabla muestra nombre, tipo y estado.</p>
+
+  <div class="sub2-title">Crear punto de venta</div>
+  <ol class="step-list">
+    <li>Clic en <strong>Nuevo punto de venta</strong>.</li>
+    <li>Ingresar nombre y seleccionar tipo: <strong>Ciudad</strong> o <strong>Aeropuerto (ATO)</strong>.</li>
+    <li>Clic en <strong>Crear</strong>. Solo los puntos activos apareceran en el formulario de admision.</li>
+  </ol>
+
+  <p>Use los botones de la tabla para <strong>Editar</strong>, <strong>Activar</strong> o <strong>Desactivar</strong> cada punto de venta.</p>
+
+  <hr>
+
+  <div class="subsection-title">6.2. Plantillas de Checklist</div>
+  <p>Ir a <strong>Plantillas de Checklist</strong>. Panel izquierdo: lista de plantillas agrupadas por tipo de mercancia. Panel derecho: items de la plantilla seleccionada.</p>
+
+  <div class="sub2-title">Crear plantilla</div>
+  <ol class="step-list">
+    <li>Clic en <strong>Nueva plantilla</strong>.</li>
+    <li>Seleccionar tipo de mercancia y tipo de POS (Ciudad o ATO).</li>
+    <li>Ingresar nombre descriptivo y clic en <strong>Crear</strong>.</li>
+  </ol>
+
+  <div class="sub2-title">Gestionar items de la plantilla</div>
+  <ul>
+    <li><strong>Agregar item:</strong> escriba el texto, marque si es obligatorio (*), clic en <strong>Agregar</strong>.</li>
+    <li><strong>Editar item:</strong> clic en el icono de editar en la fila.</li>
+    <li><strong>Reordenar:</strong> use los botones <strong>↑ ↓</strong> para cambiar el orden de los items.</li>
+    <li><strong>Eliminar item:</strong> clic en el icono de eliminar.</li>
+    <li><strong>Activar/Desactivar plantilla:</strong> solo las plantillas activas se cargan durante DeprisaCheck.</li>
+  </ul>
+
+  <div class="callout callout-red">
+    <strong>Restriccion:</strong> No se puede eliminar una plantilla que tenga checklists completados asociados. Primero desactivela para dejar de usarla sin perder el historial.
+  </div>
+
+  <hr>
+
+  <div class="subsection-title">6.3. Restricciones de Clientes</div>
+  <p>Ir a <strong>Restricciones de Clientes</strong>. Panel izquierdo: busqueda y seleccion de cliente. Panel derecho: tipos de mercancia restringidos para ese cliente.</p>
+
+  <div class="sub2-title">Agregar restriccion</div>
+  <ol class="step-list">
+    <li>Seleccione el cliente en el panel izquierdo.</li>
+    <li>En el panel derecho, seleccione el tipo de mercancia a restringir.</li>
+    <li>Clic en <strong>Agregar restriccion</strong>. Las admisiones de ese cliente para ese tipo seran rechazadas automaticamente.</li>
+  </ol>
+
+  <p>Para <strong>eliminar</strong> una restriccion, clic en el icono de eliminar en la fila correspondiente.</p>
+
+  <div class="page-footer">
+    <span>Latin Logistics Colombia SAS — Deprisa</span>
+    <span>Pagina 6 de 8</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGINA 7 — DATOS DE PRUEBA Y CHECKLIST DE VALIDACION
+══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <table class="page-header">
+    <tr>
+      <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
+      <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
+      <td class="info-right">Pagina 7 de 8</td>
+    </tr>
+    <tr>
+      <td class="title-cell">Proceso de admision de mercancia</td>
+      <td class="info-cell">Version 1.1.1</td>
+    </tr>
+    <tr>
+      <td class="info-cell">&nbsp;</td>
+      <td class="info-cell">19/03/2026</td>
+    </tr>
+  </table>
+
+  <div class="section-title">7. Datos de prueba (seed)</div>
 
   <p>Tras <code>npm run db:seed</code> se dispone de:</p>
   <table class="data-table">
     <tr><th>Tipo</th><th>ID / Codigo</th><th>Descripcion</th></tr>
     <tr><td>Cliente</td><td class="bold">client-1</td><td>Cliente Ejemplo</td></tr>
     <tr><td>Punto de venta</td><td class="bold">pos-city-1</td><td>Punto Ciudad 1 (city)</td></tr>
-    <tr><td>Punto de venta</td><td class="bold">pos-ato-1</td><td>Punto ATO 1 (airport_ato)</td></tr>
+    <tr><td>Punto de venta</td><td class="bold">pos-ato-1</td><td>Punto ATO 1 (ato)</td></tr>
     <tr><td>Tipos de mercancia</td><td>9 tipos</td><td>Animales vivos, Baterias de litio, Hielo seco, Mercancia estandar, etc.</td></tr>
   </table>
 
@@ -376,52 +549,50 @@
     <strong>Tipos que requieren DeprisaCheck:</strong> Animales vivos, Restos humanos, Perecederos, Armas, Baterias de litio, Radiactivos, Sustancias biologicas, Hielo seco.
   </div>
 
-  <div class="section-title">5. Checklist de validacion rapida</div>
+  <div class="section-title">Checklist de validacion</div>
 
   <table class="data-table">
-    <tr><th style="width:8%;">#</th><th style="width:35%;">Accion</th><th style="width:15%;">Rol</th><th>Resultado esperado</th></tr>
-    <tr><td class="center">1</td><td>Login con Asesor</td><td>—</td><td>Acceso a Nueva Admision y DeprisaCheck</td></tr>
-    <tr><td class="center">2</td><td>Login con Supervisor</td><td>—</td><td>Acceso a Supervision</td></tr>
-    <tr><td class="center">3</td><td>Login con Administrador</td><td>—</td><td>Acceso a Supervision y Usuarios</td></tr>
-    <tr><td class="center">4</td><td>Admision mercancia estandar</td><td>Asesor</td><td>Estado pending, ID mercancia</td></tr>
-    <tr><td class="center">5</td><td>Admision baterias litio (ATO)</td><td>Asesor</td><td>Redireccion a DeprisaCheck</td></tr>
-    <tr><td class="center">6</td><td>Diligenciar y enviar checklist</td><td>Asesor</td><td>&quot;Proceso completado.&quot;</td></tr>
-    <tr><td class="center">7</td><td>Listar usuarios</td><td>Admin</td><td>Tabla con usuarios</td></tr>
-    <tr><td class="center">8</td><td>Crear usuario</td><td>Admin</td><td>Usuario nuevo en la tabla</td></tr>
-    <tr><td class="center">9</td><td>Editar usuario</td><td>Admin</td><td>Cambios guardados</td></tr>
-    <tr><td class="center">10</td><td>Cerrar sesion</td><td>Cualquiera</td><td>Redireccion a login</td></tr>
-  </table>
-
-  <div class="section-title">6. Solucion de problemas</div>
-
-  <table class="data-table">
-    <tr><th>Problema</th><th>Posible causa</th><th>Accion</th></tr>
-    <tr><td>No cargan tipos de mercancia</td><td>API no accesible</td><td>Verificar que el backend este en ejecucion (puerto 3005 o 3000)</td></tr>
-    <tr><td>Error de red / API</td><td>Proxy incorrecto</td><td>Si el backend usa puerto 3005, iniciar frontend con <code>VITE_API_PORT=3005 npm run dev</code></td></tr>
-    <tr><td>Pagina Usuarios no visible</td><td>Rol no es admin</td><td>Iniciar sesion con rol Administrador</td></tr>
-    <tr><td>DeprisaCheck sin plantillas</td><td>Falta merchandiseTypeId</td><td>Iniciar admision con tipo peligroso y dejar que redirija automaticamente</td></tr>
+    <tr><th style="width:6%;">#</th><th style="width:34%;">Accion</th><th style="width:16%;">Rol</th><th>Resultado esperado</th></tr>
+    <tr><td class="center">1</td><td>Login con credenciales validas</td><td>Cualquiera</td><td>Acceso al dashboard segun rol</td></tr>
+    <tr><td class="center">2</td><td>Login con contrasena incorrecta</td><td>Cualquiera</td><td>Error "Credenciales invalidas"</td></tr>
+    <tr><td class="center">3</td><td>Login con usuario inactivo</td><td>Cualquiera</td><td>Error "Usuario inactivo"</td></tr>
+    <tr><td class="center">4</td><td>Dashboard Asesor</td><td>Asesor</td><td>Cards: Nueva Admision, DeprisaCheck</td></tr>
+    <tr><td class="center">5</td><td>Dashboard Supervisor</td><td>Supervisor</td><td>Card: Supervision</td></tr>
+    <tr><td class="center">6</td><td>Dashboard Admin</td><td>Admin</td><td>7 cards: Admision, DeprisaCheck, Supervision, Usuarios, POS, Plantillas, Restricciones</td></tr>
+    <tr><td class="center">7</td><td>Admision mercancia estandar</td><td>Asesor</td><td>Estado pending, ID mercancia</td></tr>
+    <tr><td class="center">8</td><td>Admision baterias litio (ATO)</td><td>Asesor</td><td>Redireccion automatica a DeprisaCheck</td></tr>
+    <tr><td class="center">9</td><td>Diligenciar y enviar checklist</td><td>Asesor</td><td>"Proceso completado."</td></tr>
+    <tr><td class="center">10</td><td>Panel supervision — metricas</td><td>Supervisor</td><td>Contadores actualizados por estado</td></tr>
+    <tr><td class="center">11</td><td>Filtrar admisiones por POS</td><td>Supervisor</td><td>Tabla filtrada correctamente</td></tr>
+    <tr><td class="center">12</td><td>Ver detalle de admision</td><td>Supervisor</td><td>Flujo visual + datos completos + checklist</td></tr>
+    <tr><td class="center">13</td><td>Crear punto de venta</td><td>Admin</td><td>Aparece en lista y en formulario de admision</td></tr>
+    <tr><td class="center">14</td><td>Crear plantilla + agregar items</td><td>Admin</td><td>Plantilla activa, items reordenables con ↑↓</td></tr>
+    <tr><td class="center">15</td><td>Agregar restriccion a cliente</td><td>Admin</td><td>Admision de ese tipo rechazada automaticamente</td></tr>
+    <tr><td class="center">16</td><td>Desactivar usuario</td><td>Admin</td><td>Usuario no puede iniciar sesion</td></tr>
+    <tr><td class="center">17</td><td>Cambiar contrasena de usuario</td><td>Admin</td><td>Login exitoso con nueva contrasena</td></tr>
+    <tr><td class="center">18</td><td>Cerrar sesion</td><td>Cualquiera</td><td>Redireccion a pantalla de login</td></tr>
   </table>
 
   <div class="page-footer">
     <span>Latin Logistics Colombia SAS — Deprisa</span>
-    <span>Pagina 5 de 6</span>
+    <span>Pagina 7 de 8</span>
   </div>
 </div>
 
 
 <!-- ══════════════════════════════════════════════════════════
-     PAGINA 6 — GLOSARIO
+     PAGINA 8 — SOLUCION DE PROBLEMAS Y GLOSARIO
 ══════════════════════════════════════════════════════════ -->
 <div class="page">
   <table class="page-header">
     <tr>
       <td class="logo-cell" rowspan="3"><img src="../DEPRISA.png" alt="Deprisa Logo"></td>
       <td class="title-cell">Manual de Usuario<br>DeprisaCheck</td>
-      <td class="info-right">Pagina 6 de 6</td>
+      <td class="info-right">Pagina 8 de 8</td>
     </tr>
     <tr>
       <td class="title-cell">Proceso de admision de mercancia</td>
-      <td class="info-cell">Version 1.0</td>
+      <td class="info-cell">Version 1.1.1</td>
     </tr>
     <tr>
       <td class="info-cell">&nbsp;</td>
@@ -429,27 +600,44 @@
     </tr>
   </table>
 
-  <div class="section-title">7. Glosario</div>
+  <div class="section-title">8. Solucion de problemas</div>
 
   <table class="data-table">
-    <tr><th>Termino</th><th>Definicion</th></tr>
-    <tr><td class="bold">ATO</td><td>Aeropuerto (punto de venta tipo aeropuerto).</td></tr>
-    <tr><td class="bold">DeprisaCheck</td><td>Lista de comprobacion obligatoria para mercancia peligrosa o especial.</td></tr>
-    <tr><td class="bold">Mercancia estandar</td><td>No requiere DeprisaCheck.</td></tr>
-    <tr><td class="bold">Mercancia peligrosa/especial</td><td>Requiere DeprisaCheck (ej.: baterias de litio, hielo seco).</td></tr>
+    <tr><th style="width:28%;">Problema</th><th style="width:28%;">Posible causa</th><th>Accion</th></tr>
+    <tr><td>"Credenciales invalidas"</td><td>Usuario o contrasena incorrectos</td><td>Verificar usuario y contrasena. Si es primer acceso, solicitar al administrador la creacion de la cuenta</td></tr>
+    <tr><td>"Usuario inactivo"</td><td>Cuenta desactivada por el administrador</td><td>Contactar al administrador para reactivar la cuenta</td></tr>
+    <tr><td>"Demasiados intentos. Intente en 15 minutos"</td><td>Rate limit de login alcanzado (10 intentos/IP/15 min)</td><td>Esperar 15 minutos e intentar de nuevo</td></tr>
+    <tr><td>No cargan tipos de mercancia o puntos de venta</td><td>Backend no accesible</td><td>Verificar que el servidor este corriendo en el puerto 3000</td></tr>
+    <tr><td>DeprisaCheck no muestra plantilla</td><td>Sin plantilla activa para ese tipo y POS</td><td>Crear y activar la plantilla desde el modulo Plantillas de Checklist (Admin)</td></tr>
+    <tr><td>Modulo no visible en el menu</td><td>Rol de usuario incorrecto</td><td>Verificar el rol asignado al usuario. Contactar al administrador si es necesario</td></tr>
+    <tr><td>Error CORS al conectar frontend</td><td>Variable <code>FRONTEND_URL</code> mal configurada</td><td>Verificar la variable de entorno <code>FRONTEND_URL</code> en el archivo <code>.env</code> del backend</td></tr>
+    <tr><td>Plantilla no se puede eliminar</td><td>Tiene checklists completados asociados</td><td>Desactivar la plantilla en lugar de eliminarla para conservar el historial</td></tr>
   </table>
 
-  <hr>
+  <div class="section-title">Glosario</div>
 
-  <p style="margin-top:30px; font-size:9pt; color:#777; text-align:center;">
+  <table class="data-table">
+    <tr><th style="width:22%;">Termino</th><th>Definicion</th></tr>
+    <tr><td class="bold">ATO</td><td>Aeropuerto — tipo de punto de venta aeropuerto.</td></tr>
+    <tr><td class="bold">bcrypt</td><td>Algoritmo de hashing seguro para contrasenas. Las contrasenas nunca se almacenan en texto plano ni en formato reversible.</td></tr>
+    <tr><td class="bold">DeprisaCheck</td><td>Lista de comprobacion obligatoria para mercancia peligrosa o especial que debe diligenciarse antes de aceptar la admision.</td></tr>
+    <tr><td class="bold">Mercancia estandar</td><td>Tipo de mercancia que no requiere DeprisaCheck y se admite directamente.</td></tr>
+    <tr><td class="bold">Mercancia peligrosa/especial</td><td>Requiere DeprisaCheck (ej.: baterias de litio, hielo seco, animales vivos, radiactivos).</td></tr>
+    <tr><td class="bold">POS</td><td>Point of Sale — Punto de Venta. Puede ser tipo Ciudad o Aeropuerto (ATO).</td></tr>
+    <tr><td class="bold">Rate limiting</td><td>Limite de intentos de login (10 intentos por IP cada 15 min) para prevenir ataques automatizados de fuerza bruta.</td></tr>
+    <tr><td class="bold">Restriccion de cliente</td><td>Regla que impide a un cliente admitir ciertos tipos de mercancia. Se configura desde el modulo Restricciones de Clientes.</td></tr>
+    <tr><td class="bold">Soft delete</td><td>Desactivacion logica de un registro: no se elimina fisicamente, se marca como inactivo. Preserva el historial de admisiones y la trazabilidad.</td></tr>
+  </table>
+
+  <p style="margin-top:24px; font-size:9pt; color:#777; text-align:center;">
     Documento generado para validacion funcional de DeprisaCheck.<br>
-    Version de la aplicacion: 1.0.3<br>
-    Latin Logistics Colombia SAS — Deprisa
+    Version de la aplicacion: 1.1.1 — Latin Logistics Colombia SAS — Deprisa<br>
+    Fecha: 19 de Marzo de 2026
   </p>
 
   <div class="page-footer">
     <span>Latin Logistics Colombia SAS — Deprisa</span>
-    <span>Pagina 6 de 6</span>
+    <span>Pagina 8 de 8</span>
   </div>
 </div>
 
