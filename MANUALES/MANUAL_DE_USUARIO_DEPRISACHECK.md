@@ -2,7 +2,7 @@
 
 **Plataforma de admisión de mercancía en puntos de venta Ciudad y Aeropuerto**
 
-*Documento para validar el funcionamiento de la aplicación*
+*Versión 1.1.1 — Última actualización: 2026-03-19*
 
 ---
 
@@ -11,17 +11,17 @@
 DeprisaCheck es la herramienta para gestionar el proceso de admisión de mercancía en puntos de venta ciudad y aeropuerto (ATO). Permite:
 
 - Iniciar admisiones de mercancía
-- Diligenciar listas de comprobación para mercancía peligrosa o especial (DeprisaCheck)
-- Supervisar operaciones (supervisor/admin)
-- Gestionar usuarios (solo administrador)
+- Diligenciar listas de comprobación para mercancía peligrosa o especial
+- Supervisar operaciones con métricas y filtros avanzados
+- Gestionar usuarios, puntos de venta, plantillas de checklist y restricciones de clientes
 
 ### Roles de usuario
 
 | Rol | Descripción | Módulos disponibles |
 |-----|-------------|---------------------|
-| **Asesor** | Operador de admisión | Nueva Admisión, DeprisaCheck |
-| **Supervisor** | Monitoreo operativo | Supervisión |
-| **Administrador** | Gestión completa | Supervisión, Usuarios |
+| **Asesor** | Operador de admisión en punto de venta | Nueva Admisión, DeprisaCheck |
+| **Supervisor** | Monitoreo operativo | Panel de Supervisión, Detalle de Admisiones |
+| **Administrador** | Gestión completa del sistema | Todos los módulos |
 
 ---
 
@@ -29,66 +29,59 @@ DeprisaCheck es la herramienta para gestionar el proceso de admisión de mercanc
 
 ### 2.1 URL de acceso
 
-- **Aplicación:** `http://localhost:5173`
-- **API:** `http://localhost:3005` (según configuración)
+- **Aplicación:** `http://localhost:5173` (desarrollo) o la URL de producción asignada
+- **API:** `http://localhost:3000`
 
 ### 2.2 Inicio de sesión
 
 1. Abra la URL de la aplicación en el navegador.
-2. En la pantalla de login:
-   - **Usuario:** ingrese cualquier nombre (ej.: `asesor`, `admin`, `supervisor`)
-   - **Rol:** seleccione el rol con el que desea probar:
-     - Asesor
-     - Supervisor
-     - Administrador
+2. En la pantalla de login ingrese:
+   - **Usuario:** su nombre de usuario registrado
+   - **Contraseña:** su contraseña (mínimo 6 caracteres)
 3. Haga clic en **Entrar**.
 
-> **Nota:** La aplicación no valida credenciales contra base de datos en esta versión. El rol seleccionado determina los módulos visibles.
+> **Seguridad:** El sistema valida las credenciales contra la base de datos con contraseñas cifradas (bcrypt). El login tiene límite de 10 intentos por IP cada 15 minutos para prevenir ataques de fuerza bruta. Los usuarios inactivos no pueden iniciar sesión.
+
+### 2.3 Cierre de sesión
+
+Haga clic en **Cerrar sesión** en la barra superior derecha.
 
 ---
 
-## 3. Validación por rol
+## 3. Módulos por rol
 
 ### 3.1 Rol: Asesor
 
 #### Dashboard
 
-- Debe mostrar: **Nueva Admisión** y **DeprisaCheck**.
-- Menú lateral: Inicio, Admisión, DeprisaCheck.
+Muestra las tarjetas: **Nueva Admisión** y **DeprisaCheck**.
 
-#### Prueba: Nueva Admisión (mercancía estándar)
+#### Nueva Admisión
 
-1. Ir a **Nueva Admisión**.
-2. Completar:
-   - **ID Cliente:** `client-1`
-   - **Tipo de mercancía:** Mercancía estándar
-   - **Punto de venta:** Punto Ciudad 1 (city) o Punto ATO 1 (airport_ato)
+1. Ir a **Nueva Admisión** en el menú o dashboard.
+2. Completar el formulario:
+   - **ID Cliente:** identificador del cliente (ej.: `client-1`)
+   - **Tipo de mercancía:** seleccione de la lista. Los tipos que requieren DeprisaCheck aparecen con la etiqueta *(Requiere DeprisaCheck)*
+   - **Punto de venta:** seleccione el punto de venta (lista cargada desde el sistema)
 3. Clic en **Iniciar admisión**.
-4. **Resultado esperado:** Estado `pending`, ID de mercancía mostrado.
 
-#### Prueba: Nueva Admisión (mercancía peligrosa — DeprisaCheck)
+**Resultados posibles:**
 
-1. Ir a **Nueva Admisión**.
-2. Completar:
-   - **ID Cliente:** `client-1`
-   - **Tipo de mercancía:** Baterías de litio (Requiere DeprisaCheck)
-   - **Punto de venta:** Punto ATO 1
-3. Clic en **Iniciar admisión**.
-4. **Resultado esperado:** Redirección automática a **DeprisaCheck** con la mercancía creada.
+| Estado | Descripción |
+|--------|-------------|
+| `pending` | Admisión registrada, en espera |
+| `requires_deprisacheck` | Redirige automáticamente a DeprisaCheck |
+| `rejected` | Rechazada por restricción de cliente o tipo |
 
-#### Prueba: DeprisaCheck — Lista de comprobación
+#### DeprisaCheck — Lista de comprobación
 
-1. Acceder desde el flujo anterior (mercancía peligrosa) o desde **DeprisaCheck** con parámetros en URL.
-2. Verificar que se muestre el nombre de la plantilla (ej.: Lista Baterías de Litio).
-3. Marcar los ítems obligatorios (con asterisco *).
-4. Clic en **Guardar lista**.
-5. Clic en **Enviar para aceptación**.
-6. **Resultado esperado:** Mensaje "Proceso completado.".
+Acceso automático al admitir mercancía peligrosa, o manualmente desde el menú.
 
-#### Casos de rechazo (validación)
-
-- **Sin tipo de mercancía:** el formulario no debe enviar (validación HTML5).
-- **Restricciones de cliente/punto de venta:** la API puede devolver rechazo con mensaje.
+1. Si accede manualmente, ingrese el **ID de Mercancía** y seleccione el tipo.
+2. Marque los ítems de la lista (los obligatorios llevan `*`).
+3. Clic en **Guardar lista** para guardar el progreso.
+4. Clic en **Enviar para aceptación** para finalizar.
+5. Resultado esperado: mensaje **"Proceso completado."**
 
 ---
 
@@ -96,52 +89,118 @@ DeprisaCheck es la herramienta para gestionar el proceso de admisión de mercanc
 
 #### Dashboard
 
-- Debe mostrar: **Supervisión**.
-- Menú lateral: Inicio, Supervisión.
+Muestra la tarjeta **Supervisión**.
 
-#### Prueba: Panel de Supervisión
+#### Panel de Supervisión
 
-1. Ir a **Supervisión**.
-2. **Resultado esperado:** Pantalla de bienvenida y mensaje de funcionalidad en desarrollo (listado de admisiones pendiente).
+1. Ir a **Supervisión** en el menú o dashboard.
+2. Ver el panel de **métricas** en la parte superior:
+   - Total de admisiones
+   - Pendientes
+   - En DeprisaCheck
+   - Aceptadas
+   - Rechazadas
+
+3. Usar la **barra de filtros** para refinar la vista:
+   - **Rango de fecha:** Hoy / Esta semana / Rango personalizado
+   - **Punto de venta:** filtrar por POS específico
+   - **Tipo de mercancía:** filtrar por tipo
+   - **Estado:** pendiente / deprisacheck / aceptada / rechazada
+
+4. La tabla muestra las admisiones con fecha, cliente, tipo, POS y estado.
+5. Haga clic en cualquier fila para ver el **Detalle de Admisión**.
+
+#### Detalle de Admisión
+
+Muestra:
+- Información del cliente y punto de venta
+- Tipo de mercancía
+- **Indicador de flujo visual** del estado: Pendiente → DeprisaCheck → Aceptada/Rechazada
+- Razón de rechazo (si aplica), resaltada en rojo
+- Checklist completado con todas las respuestas (si aplica)
+
+> El supervisor puede **ver pero no modificar** admisiones.
 
 ---
 
 ### 3.3 Rol: Administrador
 
-#### Dashboard
+El administrador tiene acceso a todos los módulos anteriores más:
 
-- Debe mostrar: **Supervisión** y **Usuarios**.
-- Menú lateral: Inicio, Supervisión, Usuarios.
+#### Usuarios
 
-#### Prueba: Módulo de Usuarios
+1. Ir a **Usuarios** en el menú o dashboard.
+2. Ver tabla con: Usuario, Email, Rol, POS asignado, DeprisaCheck, Estado, Acciones.
 
-1. Ir a **Usuarios**.
-2. Verificar tabla con usuarios existentes (Usuario, Email, Rol, DeprisaCheck, Acciones).
-
-##### Crear usuario
-
+**Crear usuario:**
 1. Clic en **Nuevo usuario**.
-2. Completar:
-   - Usuario
-   - Contraseña
-   - Email
-   - Rol (Asesor, Supervisor, Administrador)
-   - Habilitado para DeprisaCheck (opcional)
+2. Completar: usuario, contraseña (mín. 6 chars), email, rol, punto de venta, habilitado DeprisaCheck.
 3. Clic en **Crear**.
-4. **Resultado esperado:** Usuario nuevo en la tabla.
 
-##### Editar usuario
-
+**Editar usuario:**
 1. Clic en **Editar** en la fila del usuario.
-2. Modificar campos (excepto Usuario).
+2. Modificar campos (excepto nombre de usuario).
 3. Clic en **Guardar**.
-4. **Resultado esperado:** Cambios reflejados en la tabla.
 
-##### Eliminar usuario
+**Activar / Desactivar usuario:**
+- Clic en **Desactivar** o **Activar** en la columna de acciones.
+- Los usuarios desactivados no pueden iniciar sesión.
+- El historial de admisiones del usuario se conserva.
 
-1. Clic en **Eliminar**.
-2. Confirmar en el cuadro de diálogo.
-3. **Resultado esperado:** Usuario eliminado de la tabla.
+**Cambiar contraseña:**
+1. Clic en **Cambiar contraseña** en la fila del usuario.
+2. Ingresar la nueva contraseña (mín. 6 caracteres).
+3. Clic en **Guardar**.
+
+#### Puntos de Venta
+
+1. Ir a **Puntos de Venta** en el dashboard.
+2. Ver tabla con nombre, tipo (Ciudad / Aeropuerto ATO) y estado.
+
+**Crear punto de venta:**
+1. Clic en **Nuevo punto de venta**.
+2. Ingresar nombre y seleccionar tipo.
+3. Clic en **Crear**.
+
+**Editar / Activar / Desactivar:**
+- Use los botones de acción en cada fila.
+- Solo los puntos activos aparecen en el formulario de admisión.
+
+#### Plantillas de Checklist
+
+1. Ir a **Plantillas de Checklist** en el dashboard.
+2. Panel izquierdo: lista de plantillas agrupadas por tipo de mercancía.
+3. Panel derecho: ítems de la plantilla seleccionada.
+
+**Crear plantilla:**
+1. Clic en **Nueva plantilla**.
+2. Seleccionar tipo de mercancía y tipo de POS.
+3. Ingresar nombre y clic en **Crear**.
+
+**Gestionar ítems:**
+- **Agregar ítem:** escribir el texto del ítem y marcar si es obligatorio, luego clic en **Agregar**.
+- **Editar ítem:** clic en el ícono de editar en la fila del ítem.
+- **Eliminar ítem:** clic en el ícono de eliminar.
+- **Reordenar:** usar los botones ↑ ↓ para cambiar el orden de los ítems.
+
+**Activar / Desactivar plantilla:**
+- Solo las plantillas activas se cargan durante el proceso de DeprisaCheck.
+
+> **Nota:** No se puede eliminar una plantilla que tenga checklists completados asociados.
+
+#### Restricciones de Clientes
+
+1. Ir a **Restricciones de Clientes** en el dashboard.
+2. Panel izquierdo: buscar y seleccionar un cliente.
+3. Panel derecho: ver y gestionar los tipos de mercancía restringidos.
+
+**Agregar restricción:**
+1. Seleccionar cliente en el panel izquierdo.
+2. En el panel derecho, seleccionar el tipo de mercancía a restringir.
+3. Clic en **Agregar restricción**.
+
+**Eliminar restricción:**
+- Clic en el ícono de eliminar en la fila de la restricción.
 
 ---
 
@@ -153,7 +212,7 @@ Tras `npm run db:seed` se dispone de:
 |------|-------------|-------------|
 | Cliente | `client-1` | Cliente Ejemplo |
 | Punto de venta | `pos-city-1` | Punto Ciudad 1 (city) |
-| Punto de venta | `pos-ato-1` | Punto ATO 1 (airport_ato) |
+| Punto de venta | `pos-ato-1` | Punto ATO 1 (ato) |
 | Tipos de mercancía | 9 tipos | Animales vivos, Baterías de litio, Hielo seco, Mercancía estándar, etc. |
 
 **Tipos que requieren DeprisaCheck:** Animales vivos, Restos humanos, Perecederos, Armas, Baterías de litio, Radiactivos, Sustancias biológicas, Hielo seco.
@@ -164,16 +223,23 @@ Tras `npm run db:seed` se dispone de:
 
 | # | Acción | Rol | Resultado esperado |
 |---|--------|-----|--------------------|
-| 1 | Login con Asesor | — | Acceso a Nueva Admisión y DeprisaCheck |
-| 2 | Login con Supervisor | — | Acceso a Supervisión |
-| 3 | Login con Administrador | — | Acceso a Supervisión y Usuarios |
-| 4 | Admisión mercancía estándar | Asesor | Estado pending, ID mercancía |
-| 5 | Admisión baterías litio (ATO) | Asesor | Redirección a DeprisaCheck |
-| 6 | Diligenciar y enviar checklist | Asesor | "Proceso completado." |
-| 7 | Listar usuarios | Admin | Tabla con usuarios |
-| 8 | Crear usuario | Admin | Usuario nuevo en la tabla |
-| 9 | Editar usuario | Admin | Cambios guardados |
-| 10 | Cerrar sesión | Cualquiera | Redirección a login |
+| 1 | Login con credenciales válidas | Cualquiera | Acceso al dashboard según rol |
+| 2 | Login con contraseña incorrecta | Cualquiera | Error "Credenciales inválidas" |
+| 3 | Login con usuario inactivo | Cualquiera | Error "Usuario inactivo" |
+| 4 | Dashboard Asesor | Asesor | Cards: Nueva Admisión, DeprisaCheck |
+| 5 | Dashboard Supervisor | Supervisor | Card: Supervisión |
+| 6 | Dashboard Admin | Admin | 6 cards: Admisión, DeprisaCheck, Supervisión, Usuarios, Puntos de Venta, Plantillas, Restricciones |
+| 7 | Admisión mercancía estándar | Asesor | Estado `pending`, ID mercancía |
+| 8 | Admisión baterías litio (ATO) | Asesor | Redirige a DeprisaCheck |
+| 9 | Diligenciar y enviar checklist | Asesor | "Proceso completado." |
+| 10 | Panel Supervisión — métricas | Supervisor | Contadores por estado |
+| 11 | Filtrar admisiones por POS | Supervisor | Tabla filtrada |
+| 12 | Ver detalle de admisión | Supervisor | Flujo visual + datos completos |
+| 13 | Crear punto de venta | Admin | Aparece en lista y en formulario de admisión |
+| 14 | Crear plantilla + agregar ítems | Admin | Plantilla activa, ítems reordenables |
+| 15 | Desactivar usuario | Admin | Usuario no puede iniciar sesión |
+| 16 | Cambiar contraseña de usuario | Admin | Login con nueva contraseña exitoso |
+| 17 | Cerrar sesión | Cualquiera | Redirección a login |
 
 ---
 
@@ -181,20 +247,28 @@ Tras `npm run db:seed` se dispone de:
 
 | Problema | Posible causa | Acción |
 |----------|---------------|--------|
-| No cargan tipos de mercancía | API no accesible | Verificar que el backend esté en ejecución (puerto 3005 o 3000) |
-| Error de red / API | Proxy incorrecto | Si el backend usa puerto 3005, iniciar frontend con `VITE_API_PORT=3005 npm run dev` |
-| Página Usuarios no visible | Rol no es admin | Iniciar sesión con rol Administrador |
-| DeprisaCheck sin plantillas | Falta merchandiseTypeId | Iniciar admisión con tipo peligroso y dejar que redirija automáticamente |
+| "Credenciales inválidas" | Contraseña incorrecta o usuario no existe | Verificar usuario/contraseña. Si es primer acceso, contactar al administrador |
+| "Usuario inactivo" | Cuenta desactivada | Contactar al administrador para reactivar |
+| "Demasiados intentos" | Rate limit alcanzado (10 intentos/15 min) | Esperar 15 minutos e intentar de nuevo |
+| No cargan tipos de mercancía | API no accesible | Verificar que el backend esté corriendo (puerto 3000) |
+| No cargan puntos de venta | API no accesible o sin datos | Verificar backend y ejecutar `npm run db:seed` |
+| DeprisaCheck sin plantillas | Tipo de mercancía sin plantilla activa | Crear plantilla desde el módulo de Plantillas (Admin) |
+| Página no visible por rol | Acceso al módulo con rol incorrecto | Iniciar sesión con el rol adecuado |
+| Error CORS al conectar frontend | `FRONTEND_URL` mal configurado | Verificar variable de entorno `FRONTEND_URL` en el backend |
 
 ---
 
 ## 7. Glosario
 
-- **ATO:** Aeropuerto (punto de venta tipo aeropuerto).
+- **ATO:** Aeropuerto — tipo de punto de venta aeropuerto.
 - **DeprisaCheck:** Lista de comprobación obligatoria para mercancía peligrosa o especial.
+- **POS:** Point of Sale — Punto de Venta (ciudad o aeropuerto).
 - **Mercancía estándar:** No requiere DeprisaCheck.
-- **Mercancía peligrosa/especial:** Requiere DeprisaCheck (ej.: baterías de litio, hielo seco).
+- **Mercancía peligrosa/especial:** Requiere DeprisaCheck (ej.: baterías de litio, hielo seco, animales vivos).
+- **Soft delete:** Desactivación lógica (el registro no se elimina físicamente; se marca como inactivo para preservar el historial).
+- **bcrypt:** Algoritmo de hashing seguro para contraseñas. Las contraseñas nunca se almacenan en texto plano.
+- **Rate limiting:** Límite de intentos de login para prevenir ataques automatizados.
 
 ---
 
-*Documento generado para validación funcional de DeprisaCheck. Versión de la aplicación: 1.0.3*
+*Versión de la aplicación: 1.1.1 — DeprisaCheck, Latin Logistics Colombia SAS*

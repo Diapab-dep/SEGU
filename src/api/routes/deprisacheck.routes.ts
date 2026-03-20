@@ -5,6 +5,7 @@
 import { Router } from 'express';
 import { deprisacheckService } from '../../services/deprisacheck.service';
 import { userRepository } from '../../repositories/user.repository';
+import { userService } from '../../services/user.service';
 import { merchandiseChecklistRepository } from '../../repositories/merchandise-checklist.repository';
 
 const router = Router();
@@ -16,7 +17,12 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'username y password son requeridos' });
     }
     const user = await userRepository.findByUsername(username);
+    // Respuesta genérica para no revelar si el usuario existe
     if (!user) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+    const passwordValid = await userService.verifyPassword(password, user.passwordHash);
+    if (!passwordValid) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     if ((user as { isActive?: boolean }).isActive === false) {

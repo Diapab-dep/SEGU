@@ -1,4 +1,7 @@
 import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import admissionRoutes from './routes/admission.routes';
 import merchandiseTypesRoutes from './routes/merchandise-types.routes';
 import usersRoutes from './routes/users.routes';
@@ -15,12 +18,32 @@ import { requestLogger } from './middleware/request-logger';
 import { prisma } from '../lib/prisma';
 
 const app = express();
+
+// Security headers
+app.use(helmet());
+
+// CORS — permite solo el frontend configurado en env (o localhost en dev)
+const allowedOrigins = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL, 'http://localhost:5173']
+  : ['http://localhost:5173', 'http://localhost:3000'];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+// Rate limiting para login: máx 10 intentos por IP cada 15 min
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos. Intente de nuevo en 15 minutos.' },
+});
+
 app.use(requestLogger);
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 app.use('/api/admission', admissionRoutes);
 app.use('/api/merchandise-types', merchandiseTypesRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/deprisacheck/login', loginLimiter);
 app.use('/api/deprisacheck', deprisacheckRoutes);
 app.use('/api/guides', guidesRoutes);
 app.use('/api/manifests', manifestsRoutes);
