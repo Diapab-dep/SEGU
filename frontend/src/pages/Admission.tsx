@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, type MerchandiseType } from '../api/client';
-
-const POINTS_OF_SALE = [
-  { id: 'pos-city-1', name: 'Punto Ciudad 1', type: 'city' },
-  { id: 'pos-ato-1', name: 'Punto ATO 1', type: 'airport_ato' },
-];
+import { api, type MerchandiseType, type PointOfSale } from '../api/client';
 
 export function Admission() {
   const [types, setTypes] = useState<MerchandiseType[]>([]);
+  const [posList, setPosList] = useState<PointOfSale[]>([]);
   const [clientId, setClientId] = useState('client-1');
   const [merchandiseTypeId, setMerchandiseTypeId] = useState('');
-  const [pointOfSaleId, setPointOfSaleId] = useState('pos-city-1');
+  const [pointOfSaleId, setPointOfSaleId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ merchandiseId: string; merchandiseTypeId?: string; status: string; requiresDeprisacheck?: boolean } | null>(null);
@@ -19,6 +15,10 @@ export function Admission() {
 
   useEffect(() => {
     api.getMerchandiseTypes().then(setTypes).catch((e) => setError(e.message));
+    api.getPointsOfSale().then((list) => {
+      setPosList(list);
+      if (list.length > 0) setPointOfSaleId(list[0].id);
+    }).catch((e) => setError(e.message));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,7 +56,10 @@ export function Admission() {
 
   return (
     <div className="page">
-      <h1>Nueva Admisión</h1>
+      <section className="page-header">
+        <h1>Nueva Admisión</h1>
+        <p>Inicie el proceso de admisión de mercancía seleccionando cliente, tipo y punto de venta.</p>
+      </section>
       <form className="form" onSubmit={handleSubmit}>
         <label>
           ID Cliente
@@ -85,9 +88,9 @@ export function Admission() {
         <label>
           Punto de venta
           <select value={pointOfSaleId} onChange={(e) => setPointOfSaleId(e.target.value)}>
-            {POINTS_OF_SALE.map((p) => (
+            {posList.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} ({p.type})
+                {p.name} ({p.type === 'ato' ? 'ATO' : 'Ciudad'})
               </option>
             ))}
           </select>
@@ -102,7 +105,7 @@ export function Admission() {
             )}
           </div>
         )}
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="btn-primary" disabled={loading}>
           {loading ? 'Procesando...' : 'Iniciar admisión'}
         </button>
       </form>

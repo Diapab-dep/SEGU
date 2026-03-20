@@ -1,3 +1,4 @@
+import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Layout } from './components/Layout';
@@ -7,6 +8,10 @@ import { Admission } from './pages/Admission';
 import { DeprisaCheck } from './pages/DeprisaCheck';
 import { Supervisor } from './pages/Supervisor';
 import { Users } from './pages/Users';
+import { AdmissionDetail } from './pages/AdmissionDetail';
+import { PointsOfSale } from './pages/PointsOfSale';
+import { ChecklistTemplates } from './pages/ChecklistTemplates';
+import { ClientRestrictions } from './pages/ClientRestrictions';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -30,7 +35,11 @@ function AppRoutes() {
         <Route path="admission" element={<Admission />} />
         <Route path="deprisacheck" element={<DeprisaCheck />} />
         <Route path="supervisor" element={<Supervisor />} />
+        <Route path="admissions/:id" element={<AdmissionDetail />} />
         <Route path="users" element={<Users />} />
+        <Route path="points-of-sale" element={<PointsOfSale />} />
+        <Route path="checklist-templates" element={<ChecklistTemplates />} />
+        <Route path="client-restrictions" element={<ClientRestrictions />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

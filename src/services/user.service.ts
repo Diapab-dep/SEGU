@@ -44,10 +44,16 @@ export const userService = {
       email: string;
       role: UserRole;
       isDeprisacheckEnabled: boolean;
+      isActive: boolean;
       pointOfSaleId: string | null;
     }>
   ) {
     return userRepository.update(id, data);
+  },
+
+  async changePassword(id: string, newPassword: string) {
+    const passwordHash = Buffer.from(newPassword).toString('base64');
+    return userRepository.updatePassword(id, passwordHash);
   },
 
   async deleteUser(id: string) {

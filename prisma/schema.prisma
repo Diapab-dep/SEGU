@@ -1,182 +1,385 @@
-// Prisma Schema - DeprisaCheck Admisión de Mercancía
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// Catálogo de tipos de mercancía (migrado desde Power Apps DeprisaCheck)
-// Tipos con requiresChecklist=true: ANIMALES_VIVOS, RESTOS_HUMANOS, PERECEDEROS, ARMAS, BATERIAS_LITIO, RADIACTIVOS, SUSTANCIAS_BIOLOGICAS, HIELO_SECO
-// PointOfSaleType: city | airport_ato
-// UserRole: advisor | admin | operator
-// ManifestStatus: generated | delivered
-// ChecklistStatus: pending | completed | rejected
-
-// Catálogo maestro de tipos (selección explícita del asesor)
-model MerchandiseTypeCatalog {
-  id               String   @id @default(uuid())
-  code             String   @unique  // ANIMALES_VIVOS, RESTOS_HUMANOS, etc.
-  name             String
-  requiresChecklist Boolean @default(false)
-  isActive         Boolean  @default(true)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  merchandises      Merchandise[]
-  checklistTemplates ChecklistTemplate[]
-}
-
-// Modelos
-model Merchandise {
-  id                   String   @id @default(uuid())
-  clientId             String
-  pointOfSaleId        String
-  merchandiseTypeId    String   // Selección explícita del asesor (catálogo)
-  description       String?
-  classificationCode String?
-  weight            Float?
-  dimensions        String?
-  status            String            @default("pending") // MerchandiseStatus
-  rejectionReason   String?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-
-  client             Client   @relation(fields: [clientId], references: [id])
-  pointOfSale        PointOfSale @relation(fields: [pointOfSaleId], references: [id])
-  merchandiseType    MerchandiseTypeCatalog @relation(fields: [merchandiseTypeId], references: [id])
-  checklists         MerchandiseChecklist[]
-  guides             Guide[]
-}
-
-model Client {
-  id        String   @id @default(uuid())
-  name      String
-  email     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  merchandises      Merchandise[]
-  restrictions      ClientRestriction[]
-}
-
-model ClientRestriction {
-  id                  String   @id @default(uuid())
-  clientId            String
-  merchandiseTypeId   String   // Referencia a catálogo
-  restrictionType String
-  pointOfSaleId   String?
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  client Client @relation(fields: [clientId], references: [id])
-}
-
-model User {
-  id                    String   @id @default(uuid())
-  username              String   @unique
-  passwordHash          String
-  email                 String?
-  role                  String   @default("advisor") // UserRole
-  isDeprisacheckEnabled Boolean  @default(false)
-  pointOfSaleId         String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-
-  pointOfSale PointOfSale? @relation(fields: [pointOfSaleId], references: [id])
-}
-
-model PointOfSale {
-  id              String          @id @default(uuid())
-  name            String
-  type            String // PointOfSaleType: city | airport_ato
-  baseRestrictions String?
-  isActive        Boolean         @default(true)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-
-  merchandises  Merchandise[]
-  users         User[]
-  manifests     Manifest[]
-  handlingPerms HandlingPermission[]
-}
-
-model HandlingPermission {
-  id                  String   @id @default(uuid())
-  pointOfSaleId       String
-  merchandiseTypeId   String
-  isPermitted     Boolean         @default(true)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-
-  pointOfSale PointOfSale @relation(fields: [pointOfSaleId], references: [id])
-}
-
 model ChecklistTemplate {
-  id                  String   @id @default(uuid())
-  name                String
-  merchandiseTypeId   String   // Vinculado al catálogo
-  pointOfSaleType     String   // city | airport_ato
-  rejectionTemplateId String?
-  isActive            Boolean  @default(true)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-
-  merchandiseType MerchandiseTypeCatalog @relation(fields: [merchandiseTypeId], references: [id])
-  items          ChecklistTemplateItem[]
-  checklists     MerchandiseChecklist[]
+  id                     String                  @id @default(uuid())
+  name                   String
+  merchandiseTypeId      String
+  pointOfSaleType        String
+  rejectionTemplateId    String?
+  isActive               Boolean                 @default(true)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  MerchandiseTypeCatalog MerchandiseTypeCatalog  @relation(fields: [merchandiseTypeId], references: [id])
+  ChecklistTemplateItem  ChecklistTemplateItem[]
+  MerchandiseChecklist   MerchandiseChecklist[]
 }
 
 model ChecklistTemplateItem {
-  id         String   @id @default(uuid())
-  templateId String
-  text       String
-  required   Boolean  @default(false)
-  order      Int      @default(0)
-  createdAt  DateTime @default(now())
-
-  template ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  id                String            @id
+  templateId        String
+  text              String
+  required          Boolean           @default(false)
+  order             Int               @default(0)
+  createdAt         DateTime          @default(now())
+  ChecklistTemplate ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
 }
 
-model MerchandiseChecklist {
-  id               String         @id @default(uuid())
-  merchandiseId    String
-  templateId       String
-  completedByUserId String?
-  responses        String         // JSON: { item_id: value }
-  status           String           @default("pending") // ChecklistStatus
-  completionDate   DateTime?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+model Client {
+  id                String              @id @default(uuid())
+  name              String
+  email             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  ClientRestriction ClientRestriction[]
+  Merchandise       Merchandise[]
+}
 
-  merchandise  Merchandise      @relation(fields: [merchandiseId], references: [id])
-  template     ChecklistTemplate @relation(fields: [templateId], references: [id])
+model ClientRestriction {
+  id                String   @id @default(uuid())
+  clientId          String
+  merchandiseTypeId String
+  restrictionType   String
+  pointOfSaleId     String?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime            @updatedAt
+  Client            Client   @relation(fields: [clientId], references: [id])
 }
 
 model Guide {
-  id          String   @id @default(uuid())
-  guideNumber String
+  id            String      @id @default(uuid())
+  guideNumber   String
   merchandiseId String
-  printDate   DateTime @default(now())
-  documentUrl String?
-  createdAt   DateTime @default(now())
+  printDate     DateTime    @default(now())
+  documentUrl   String?
+  createdAt     DateTime    @default(now())
+  Merchandise   Merchandise @relation(fields: [merchandiseId], references: [id])
+}
 
-  merchandise Merchandise @relation(fields: [merchandiseId], references: [id])
+model HandlingPermission {
+  id                String      @id @default(uuid())
+  pointOfSaleId     String
+  merchandiseTypeId String
+  isPermitted       Boolean     @default(true)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  PointOfSale       PointOfSale @relation(fields: [pointOfSaleId], references: [id])
 }
 
 model Manifest {
-  id            String        @id @default(uuid())
+  id             String      @id @default(uuid())
   manifestNumber String
-  pointOfSaleId String
-  merchandiseIds String       // JSON array de IDs
-  status        String         @default("generated") // ManifestStatus
-  creationDate  DateTime      @default(now())
-  deliveryDate  DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  pointOfSaleId  String
+  merchandiseIds String
+  status         String      @default("generated")
+  creationDate   DateTime    @default(now())
+  deliveryDate   DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  PointOfSale    PointOfSale @relation(fields: [pointOfSaleId], references: [id])
+}
 
-  pointOfSale PointOfSale @relation(fields: [pointOfSaleId], references: [id])
+model Merchandise {
+  id                     String                 @id @default(uuid())
+  clientId               String
+  pointOfSaleId          String
+  merchandiseTypeId      String
+  description            String?
+  classificationCode     String?
+  weight                 Float?
+  dimensions             String?
+  status                 String                 @default("pending")
+  rejectionReason        String?
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  Guide                  Guide[]
+  Client                 Client                 @relation(fields: [clientId], references: [id])
+  MerchandiseTypeCatalog MerchandiseTypeCatalog @relation(fields: [merchandiseTypeId], references: [id])
+  PointOfSale            PointOfSale            @relation(fields: [pointOfSaleId], references: [id])
+  MerchandiseChecklist   MerchandiseChecklist[]
+}
+
+model MerchandiseChecklist {
+  id                String            @id @default(uuid())
+  merchandiseId     String
+  templateId        String
+  completedByUserId String?
+  responses         String
+  status            String            @default("pending")
+  completionDate    DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  Merchandise       Merchandise       @relation(fields: [merchandiseId], references: [id])
+  ChecklistTemplate ChecklistTemplate @relation(fields: [templateId], references: [id])
+}
+
+model MerchandiseTypeCatalog {
+  id                String              @id @default(uuid())
+  code              String              @unique
+  name              String
+  requiresChecklist Boolean             @default(false)
+  isActive          Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  ChecklistTemplate ChecklistTemplate[]
+  Merchandise       Merchandise[]
+}
+
+model PointOfSale {
+  id                 String               @id @default(uuid())
+  name               String
+  type               String
+  baseRestrictions   String?
+  isActive           Boolean              @default(true)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  HandlingPermission HandlingPermission[]
+  Manifest           Manifest[]
+  Merchandise        Merchandise[]
+  User               User[]
+}
+
+model User {
+  id                    String       @id @default(uuid())
+  username              String       @unique
+  passwordHash          String
+  email                 String?
+  role                  String       @default("advisor")
+  isDeprisacheckEnabled Boolean      @default(false)
+  isActive              Boolean      @default(true)
+  pointOfSaleId         String?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  PointOfSale           PointOfSale? @relation(fields: [pointOfSaleId], references: [id])
+}
+
+model checklist {
+  id                  Int                   @id @default(autoincrement())
+  guia_id             Int
+  checklist_tipo_id   Int
+  fecha_hora          DateTime?             @db.Timestamp(6)
+  origen              String?               @db.VarChar(10)
+  destino             String?               @db.VarChar(10)
+  verificado_por      String?               @db.VarChar(200)
+  resultado           String?               @db.VarChar(80)
+  comentarios         String?
+  extra_json          Json?
+  checklist_tipo      checklist_tipo        @relation(fields: [checklist_tipo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  guia                guia                  @relation(fields: [guia_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  checklist_respuesta checklist_respuesta[]
+}
+
+model checklist_item {
+  id                  Int                   @id @default(autoincrement())
+  checklist_tipo_id   Int
+  codigo              String                @db.VarChar(50)
+  texto_pregunta      String
+  checklist_tipo      checklist_tipo        @relation(fields: [checklist_tipo_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  checklist_respuesta checklist_respuesta[]
+}
+
+model checklist_respuesta {
+  id                Int            @id @default(autoincrement())
+  checklist_id      Int
+  checklist_item_id Int
+  valor_booleano    Boolean?
+  valor_texto       String?
+  checklist         checklist      @relation(fields: [checklist_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  checklist_item    checklist_item @relation(fields: [checklist_item_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model checklist_tipo {
+  id             Int              @id @default(autoincrement())
+  codigo         String           @unique @db.VarChar(50)
+  descripcion    String           @db.VarChar(150)
+  checklist      checklist[]
+  checklist_item checklist_item[]
+}
+
+model detalle_animales_vivos {
+  id                    Int        @id @default(autoincrement())
+  guia_bulto_id         Int
+  numero_requisito      Int?
+  cantidad_animales     Int?
+  clase_animal          String?    @db.VarChar(100)
+  nombre_comun          String?    @db.VarChar(150)
+  nombre_cientifico     String?    @db.VarChar(150)
+  cites_apendice        String?    @db.VarChar(50)
+  raza                  String?    @db.VarChar(150)
+  edad_meses            Decimal?   @db.Decimal(10, 2)
+  tiene_condicion       Boolean?
+  descripcion_condicion String?    @db.VarChar(500)
+  proposito_transporte  String?    @db.VarChar(200)
+  peso_neto_kg          Decimal?   @db.Decimal(10, 2)
+  peso_bruto_kg         Decimal?   @db.Decimal(10, 2)
+  sexo                  String?    @db.VarChar(10)
+  guia_bulto            guia_bulto @relation(fields: [guia_bulto_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([guia_bulto_id], map: "idx_det_animales_bulto")
+}
+
+model detalle_baterias {
+  id                       Int        @id @default(autoincrement())
+  guia_bulto_id            Int
+  numero_onu               String?    @db.VarChar(20)
+  nombre_expedicion        String?    @db.VarChar(200)
+  detalle_naturaleza       String?    @db.VarChar(200)
+  cantidad_baterias_bulto  Int?
+  tipo_embalaje            String?    @db.VarChar(200)
+  peso_neto_kg             Decimal?   @db.Decimal(10, 2)
+  peso_bruto_kg            Decimal?   @db.Decimal(10, 2)
+  instruccion_embalaje     String?    @db.VarChar(50)
+  fecha_hora_envio_detalle DateTime?  @db.Timestamp(6)
+  guia_bulto               guia_bulto @relation(fields: [guia_bulto_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([guia_bulto_id], map: "idx_det_baterias_bulto")
+}
+
+model detalle_hielo_seco {
+  id                  Int        @id @default(autoincrement())
+  guia_bulto_id       Int
+  tipo_embalaje       String?    @db.VarChar(200)
+  detalle_naturaleza  String?    @db.VarChar(200)
+  peso_neto_hielo_kg  Decimal?   @db.Decimal(10, 2)
+  peso_bruto_bulto_kg Decimal?   @db.Decimal(10, 2)
+  guia_bulto          guia_bulto @relation(fields: [guia_bulto_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([guia_bulto_id], map: "idx_det_hielo_bulto")
+}
+
+model detalle_no_radiactivos {
+  id                       Int      @id @default(autoincrement())
+  guia_id                  Int
+  numero_onu               String?  @db.VarChar(20)
+  clase_division           String?  @db.VarChar(20)
+  peligro_secundario       String?  @db.VarChar(50)
+  grupo_embalaje           String?  @db.VarChar(20)
+  cantidad_bultos          Decimal? @db.Decimal(10, 3)
+  tipo_embalaje            String?  @db.VarChar(200)
+  peso_neto_mercancia      Decimal? @db.Decimal(10, 3)
+  unidad_medida_neto       String?  @db.VarChar(20)
+  peso_bruto_bulto_kg      Decimal? @db.Decimal(10, 3)
+  instruccion_embalaje     String?  @db.VarChar(50)
+  autorizaciones           String?  @db.VarChar(200)
+  disposiciones_especiales String?  @db.VarChar(200)
+  info_adicional_manip     String?  @db.VarChar(300)
+  nombre_expedicion        String?  @db.VarChar(200)
+  guia                     guia     @relation(fields: [guia_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model detalle_radiactivos {
+  id                       Int       @id @default(autoincrement())
+  guia_id                  Int
+  fecha_hora_envio_detalle DateTime? @db.Timestamp(6)
+  nombre_expedicion        String?   @db.VarChar(200)
+  numero_onu               String?   @db.VarChar(20)
+  peligro_secundario       String?   @db.VarChar(50)
+  grupo_embalaje           String?   @db.VarChar(20)
+  cantidad_bultos          Int?
+  tipo_embalaje            String?   @db.VarChar(200)
+  radionucleido            String?   @db.VarChar(50)
+  elemento_num_atomico     String?   @db.VarChar(20)
+  vida_media_horas         Decimal?  @db.Decimal(10, 2)
+  actividad_gbq            Decimal?  @db.Decimal(18, 4)
+  indice_transporte        Decimal?  @db.Decimal(10, 2)
+  categoria_radiactivo     String?   @db.VarChar(20)
+  peso_bruto_bulto_kg      Decimal?  @db.Decimal(10, 2)
+  altura_bulto_cm          Decimal?  @db.Decimal(10, 2)
+  autorizaciones           String?   @db.VarChar(200)
+  disposiciones_especiales String?   @db.VarChar(200)
+  creado_fecha             DateTime? @db.Timestamp(6)
+  creado_por               String?   @db.VarChar(200)
+  guia                     guia      @relation(fields: [guia_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model detalle_restos_humanos {
+  id                           Int        @id @default(autoincrement())
+  guia_bulto_id                Int
+  tipo_restos                  String?    @db.VarChar(100)
+  tipo_embalaje                String?    @db.VarChar(100)
+  lugar_defuncion              String?    @db.VarChar(100)
+  fecha_defuncion              DateTime?  @db.Date
+  tipo_documento_fallecido     String?    @db.VarChar(100)
+  numero_documento_fallecido   String?    @db.VarChar(50)
+  apellidos_fallecido          String?    @db.VarChar(200)
+  nombres_fallecido            String?    @db.VarChar(200)
+  edad_fallecido_anios         Decimal?   @db.Decimal(10, 2)
+  causa_muerte                 String?    @db.VarChar(200)
+  numero_licencia              String?    @db.VarChar(100)
+  numero_certificado_defuncion String?    @db.VarChar(100)
+  fecha_certificado_defuncion  DateTime?  @db.Date
+  lugar_certificado_defuncion  String?    @db.VarChar(100)
+  fecha_certificado_embalsam   DateTime?  @db.Date
+  dias_preservacion            Int?
+  guia_bulto                   guia_bulto @relation(fields: [guia_bulto_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([guia_bulto_id], map: "idx_det_restos_bulto")
+}
+
+model detalle_sustancias_biologicas {
+  id                             Int        @id @default(autoincrement())
+  guia_bulto_id                  Int
+  unidad_medida_emb_int          String?    @db.VarChar(10)
+  detalle_sustancia              String?    @db.VarChar(200)
+  detalle_patogeno               String?    @db.VarChar(200)
+  cantidad_embalajes_interiores  Int?
+  estado_fisico                  String?    @db.VarChar(50)
+  cantidad_neta_por_emb_int      Decimal?   @db.Decimal(10, 2)
+  detalle_sustancia_refrigerante String?    @db.VarChar(200)
+  numero_onu_refrigerante        String?    @db.VarChar(20)
+  cantidad_neta_bulto            Decimal?   @db.Decimal(10, 2)
+  unidad_medida_bulto            String?    @db.VarChar(10)
+  numero_bulto_csv               String?    @db.VarChar(20)
+  guia_bulto                     guia_bulto @relation(fields: [guia_bulto_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([guia_bulto_id], map: "idx_det_bio_bulto")
+}
+
+model guia {
+  id                     Int                      @id @default(autoincrement())
+  numero_guia            String                   @unique @db.VarChar(30)
+  origen                 String?                  @db.VarChar(10)
+  destino                String?                  @db.VarChar(10)
+  remitente              String?                  @db.VarChar(200)
+  destinatario           String?                  @db.VarChar(200)
+  tipo_mercancia_id      Int?
+  resultado_aceptacion   String?                  @db.VarChar(80)
+  comentarios            String?
+  fecha_envio            DateTime?                @db.Timestamp(6)
+  fecha_inicio           DateTime?                @db.Timestamp(6)
+  checklist              checklist[]
+  detalle_no_radiactivos detalle_no_radiactivos[]
+  detalle_radiactivos    detalle_radiactivos[]
+  tipo_mercancia         tipo_mercancia?          @relation(fields: [tipo_mercancia_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  guia_bulto             guia_bulto[]
+
+  @@index([numero_guia], map: "idx_guia_numero")
+}
+
+model guia_bulto {
+  id                            Int                             @id @default(autoincrement())
+  guia_id                       Int
+  numero_bulto                  String                          @db.VarChar(50)
+  detalle_animales_vivos        detalle_animales_vivos[]
+  detalle_baterias              detalle_baterias[]
+  detalle_hielo_seco            detalle_hielo_seco[]
+  detalle_restos_humanos        detalle_restos_humanos[]
+  detalle_sustancias_biologicas detalle_sustancias_biologicas[]
+  guia                          guia                            @relation(fields: [guia_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([guia_id], map: "idx_bulto_guia")
+}
+
+model tipo_mercancia {
+  id     Int    @id @default(autoincrement())
+  codigo String @unique @db.VarChar(50)
+  nombre String @db.VarChar(150)
+  guia   guia[]
 }

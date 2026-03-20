@@ -6,7 +6,7 @@ export type UserRole = (typeof ROLES)[number];
 export const userRepository = {
   async findAll() {
     return prisma.user.findMany({
-      include: { pointOfSale: true },
+      include: { PointOfSale: true },
       orderBy: { username: 'asc' },
     });
   },
@@ -14,14 +14,14 @@ export const userRepository = {
   async findById(id: string) {
     return prisma.user.findUnique({
       where: { id },
-      include: { pointOfSale: true },
+      include: { PointOfSale: true },
     });
   },
 
   async findByUsername(username: string) {
     return prisma.user.findUnique({
       where: { username },
-      include: { pointOfSale: true },
+      include: { PointOfSale: true },
     });
   },
 
@@ -42,10 +42,15 @@ export const userRepository = {
       email: string;
       role: string;
       isDeprisacheckEnabled: boolean;
+      isActive: boolean;
       pointOfSaleId: string | null;
     }>
   ) {
     return prisma.user.update({ where: { id }, data });
+  },
+
+  async updatePassword(id: string, passwordHash: string) {
+    return prisma.user.update({ where: { id }, data: { passwordHash } });
   },
 
   async delete(id: string) {

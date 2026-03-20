@@ -16,8 +16,9 @@ router.get('/', async (_req, res) => {
       email: u.email,
       role: u.role,
       isDeprisacheckEnabled: u.isDeprisacheckEnabled,
+      isActive: (u as { isActive?: boolean }).isActive ?? true,
       pointOfSaleId: u.pointOfSaleId,
-      pointOfSale: u.pointOfSale,
+      pointOfSale: u.PointOfSale,
     }));
     res.json(sanitized);
   } catch (err) {
@@ -36,7 +37,7 @@ router.get('/:id', async (req, res) => {
       role: user.role,
       isDeprisacheckEnabled: user.isDeprisacheckEnabled,
       pointOfSaleId: user.pointOfSaleId,
-      pointOfSale: user.pointOfSale,
+      pointOfSale: user.PointOfSale,
     });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
@@ -94,6 +95,32 @@ router.delete('/:id', async (req, res) => {
   try {
     await userService.deleteUser(req.params.id);
     res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
+
+// PATCH /api/users/:id/status — activar/desactivar
+router.patch('/:id/status', async (req, res) => {
+  try {
+    const { isActive } = req.body;
+    if (typeof isActive !== 'boolean')
+      return res.status(400).json({ error: 'isActive debe ser boolean' });
+    const user = await userService.updateUser(req.params.id, { isActive });
+    res.json({ id: user.id, username: user.username, isActive: (user as { isActive?: boolean }).isActive ?? true });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
+
+// PATCH /api/users/:id/password — cambiar contraseña
+router.patch('/:id/password', async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6)
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+    await userService.changePassword(req.params.id, newPassword);
+    res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
   }
