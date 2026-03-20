@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { api, type ChecklistTemplate } from '../api/client';
+import { api, type ChecklistTemplate, type MerchandiseType } from '../api/client';
 
 export function DeprisaCheck() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const merchandiseId = searchParams.get('merchandiseId');
   const merchandiseTypeIdParam = searchParams.get('merchandiseTypeId');
+  const [types, setTypes] = useState<MerchandiseType[]>([]);
+  const [manualMerchandiseId, setManualMerchandiseId] = useState('');
+  const [manualTypeId, setManualTypeId] = useState('');
   const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<ChecklistTemplate | null>(null);
   const [responses, setResponses] = useState<Record<string, string | boolean>>({});
@@ -15,19 +18,22 @@ export function DeprisaCheck() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
+    api.getMerchandiseTypes().then(setTypes).catch(console.error);
+  }, []);
+
+  useEffect(() => {
     const typeId = merchandiseTypeIdParam;
     if (merchandiseId && typeId) {
+      setError('');
       api
-        .getChecklistTemplates(typeId, 'airport_ato')
+        .getChecklistTemplates(typeId, 'ato')
         .then((t) => {
           setTemplates(t);
           if (t.length > 0 && !selectedTemplate) setSelectedTemplate(t[0]);
         })
         .catch((e) => setError(e.message));
     } else if (merchandiseId && !typeId) {
-      setError('Falta merchandiseTypeId. Inicie admisión desde el flujo de admisión.');
-    } else {
-      setError('Falta merchandiseId en la URL');
+      setError('Falta tipo de mercancía. Inicie admisión desde Nueva Admisión o ingrese los datos abajo.');
     }
   }, [merchandiseId, merchandiseTypeIdParam]);
 
@@ -71,18 +77,68 @@ export function DeprisaCheck() {
     }
   };
 
+  const handleLoadManual = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualMerchandiseId.trim() || !manualTypeId) {
+      setError('Ingrese el ID de mercancía y seleccione el tipo.');
+      return;
+    }
+    setError('');
+    setSearchParams({ merchandiseId: manualMerchandiseId.trim(), merchandiseTypeId: manualTypeId });
+  };
+
+  const typesRequiringChecklist = types.filter((t) => t.requiresChecklist);
+
   if (!merchandiseId) {
     return (
       <div className="page">
-        <p className="error">Inicie una admisión con mercancía peligrosa/especial para acceder a DeprisaCheck.</p>
+        <section className="page-header">
+          <h1>DeprisaCheck — Lista de Comprobación</h1>
+          <p>Ingrese el ID de mercancía y el tipo para cargar la lista de comprobación.</p>
+        </section>
+        {error && <p className="error">{error}</p>}
+        <form className="form" onSubmit={handleLoadManual}>
+          <label>
+            ID Mercancía
+            <input
+              type="text"
+              placeholder="Ej: uuid generado en admisión"
+              value={manualMerchandiseId}
+              onChange={(e) => setManualMerchandiseId(e.target.value)}
+            />
+          </label>
+          <label>
+            Tipo de mercancía (requiere DeprisaCheck)
+            <select
+              value={manualTypeId}
+              onChange={(e) => setManualTypeId(e.target.value)}
+              required
+            >
+              <option value="">-- Seleccione --</option>
+              {typesRequiringChecklist.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" className="btn-primary">
+            Cargar lista
+          </button>
+        </form>
+        <p style={{ marginTop: 16, fontSize: '0.9em', color: '#666' }}>
+          O inicie una admisión con mercancía peligrosa/especial en <strong>Nueva Admisión</strong> y será redirigido automáticamente.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="page">
-      <h1>DeprisaCheck - Lista de Comprobación</h1>
-      <p>Mercancía ID: {merchandiseId}</p>
+      <section className="page-header">
+        <h1>DeprisaCheck — Lista de Comprobación</h1>
+        <p>Diligencie la lista para la mercancía ID: <strong>{merchandiseId}</strong></p>
+      </section>
       {error && <p className="error">{error}</p>}
       {submitted ? (
         <div className="result-box">
@@ -106,11 +162,11 @@ export function DeprisaCheck() {
                 ))}
               </div>
               <div className="button-group">
-                <button onClick={handleSave} disabled={loading}>
+                <button className="btn-primary" onClick={handleSave} disabled={loading}>
                   {loading ? 'Guardando...' : 'Guardar lista'}
                 </button>
                 {checklistId && (
-                  <button onClick={handleSubmit} disabled={loading}>
+                  <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
                     Enviar para aceptación
                   </button>
                 )}

@@ -15,7 +15,8 @@ export async function validateChecklistCompletion(checklistId: string): Promise<
     return { valid: false, missingItems: ['checklist_not_found'] };
   }
 
-  const requiredItems = checklist.template.items.filter((i) => i.required);
+  const items = checklist.ChecklistTemplate?.ChecklistTemplateItem ?? [];
+  const requiredItems = items.filter((i) => i.required);
   const responses = (() => {
     try {
       return JSON.parse(checklist.responses) as Record<string, string | boolean>;

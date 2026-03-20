@@ -12,7 +12,7 @@ export const manifestRepository = {
   async findById(id: string) {
     return prisma.manifest.findUnique({
       where: { id },
-      include: { pointOfSale: true },
+      include: { PointOfSale: true },
     });
   },
 

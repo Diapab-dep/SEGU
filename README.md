@@ -12,12 +12,13 @@ API para el proceso de admisión de mercancía en puntos de venta Ciudad y Aerop
 | 2 | Funciones de validación (isDangerousOrSpecial, restricciones, DeprisaCheck) | ✅ Completado |
 | 3 | Servicios de negocio (Admission, DeprisaCheck, Rejection, Documentation) | ✅ Completado |
 | 4 | Endpoints API REST | ✅ Completado |
-| 5 | Integraciones externas (DeprisaCheck API, Correo, SGD/PDF) | ⏳ Pendiente |
-| 6 | Pruebas de integración y E2E | ⏳ Parcial |
+| 5 | Integraciones externas (DeprisaCheck API, Correo, SGD/PDF) | ❌ No implementar |
+| 6 | Pruebas de integración y E2E | ✅ Completado |
 | 7 | Despliegue y configuración (CI/CD, monitoreo) | ⏳ Parcial |
 
-**Completado:** Fases 1–4, 6.1, 7.1  
-**Pendiente:** Fase 5, 6.2–6.3, 7.2
+**Completado:** Fases 1–4, 6 (pruebas integración y E2E), 7.1  
+**No implementar:** Fase 5 (DeprisaCheck API, correo, SGD/PDF)  
+**Pendiente:** Fase 7.2 (CI/CD, monitoreo)
 
 ---
 
@@ -103,10 +104,15 @@ El servidor escucha en `http://localhost:3000` (o el puerto definido en `PORT`).
 ## Tests
 
 ```bash
-npm test
+npm test                    # Unitarias + cobertura
+npm run test:integration    # Pruebas de integración (requiere DB con seed)
+npm run test:e2e            # E2E con Playwright (requiere backend + frontend + DB)
+npm run run-all             # Pipeline completo: install, DB, build, unitarias, integración, E2E
 ```
 
-Incluye pruebas unitarias para `isDangerousOrSpecial` y cobertura de validadores.
+- **Unitarias:** `isDangerousOrSpecial` y validadores
+- **Integración:** Flujos admisión estándar, peligrosa, rechazos, recepción checklist (9 tests)
+- **E2E:** Flujo de admisión vía UI. Ejecuta backend y frontend automáticamente; requiere BD accesible (ej. VPN para Azure Postgres)
 
 ---
 

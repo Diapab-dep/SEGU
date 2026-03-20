@@ -2,8 +2,9 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
-  testMatch: ['**/*.test.ts', '**/*.spec.ts'],
+  roots: ['<rootDir>/src', '<rootDir>/tests'],
+  testPathIgnorePatterns: ['/node_modules/', '/tests/e2e/'],
+  testMatch: ['**/*.test.ts', '**/*.integration.test.ts'],
   collectCoverageFrom: ['src/**/*.ts', '!src/**/*.test.ts', '!src/index.ts'],
   coverageThreshold: {
     global: {

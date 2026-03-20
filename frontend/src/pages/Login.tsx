@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Footer } from '../components/Footer';
 
 export function Login() {
   const [username, setUsername] = useState('');
@@ -17,9 +18,13 @@ export function Login() {
 
   return (
     <div className="login-page">
-      <div className="login-card">
+      <div className="login-hero">
         <h1>DeprisaCheck</h1>
-        <p>Proceso de Admisión de Mercancía</p>
+        <p>Plataforma de admisión de mercancía</p>
+      </div>
+      <div className="login-card">
+        <img src="/deprisa-logo-login.png" alt="Deprisa" className="login-logo" />
+        <p>Ingrese a la plataforma para gestionar el proceso de admisión.</p>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -36,6 +41,7 @@ export function Login() {
           <button type="submit">Entrar</button>
         </form>
       </div>
+      <Footer />
     </div>
   );
 }

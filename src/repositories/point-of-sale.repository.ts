@@ -4,7 +4,7 @@ export const pointOfSaleRepository = {
   async findById(id: string) {
     return prisma.pointOfSale.findUnique({
       where: { id },
-      include: { handlingPerms: true },
+      include: { HandlingPermission: true },
     });
   },
 

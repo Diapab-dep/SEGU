@@ -18,7 +18,7 @@ export const merchandiseRepository = {
   async findById(id: string) {
     return prisma.merchandise.findUnique({
       where: { id },
-      include: { client: true, pointOfSale: true },
+      include: { Client: true, PointOfSale: true },
     });
   },
 

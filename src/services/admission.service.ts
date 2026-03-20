@@ -4,6 +4,7 @@
  */
 import { merchandiseRepository } from '../repositories/merchandise.repository';
 import { pointOfSaleRepository } from '../repositories/point-of-sale.repository';
+import { clientRepository } from '../repositories/client.repository';
 import {
   doesMerchandiseTypeRequireChecklist,
   hasClientOrBaseRestriction,
@@ -27,6 +28,15 @@ export const admissionService = {
     pointOfSaleId: string,
     userId?: string
   ): Promise<StartAdmissionResult> {
+    if (!merchandiseData.clientId) {
+      throw new Error('ID de cliente es requerido');
+    }
+
+    const client = await clientRepository.findById(merchandiseData.clientId);
+    if (!client) {
+      throw new Error('Cliente no encontrado. Use un ID de cliente existente (ej: client-1).');
+    }
+
     const pointOfSale = await pointOfSaleRepository.findById(pointOfSaleId);
     if (!pointOfSale) throw new Error('Punto de venta no encontrado');
 

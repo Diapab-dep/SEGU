@@ -16,13 +16,18 @@ router.post('/start', async (req, res) => {
     if (!merchandiseData || !pointOfSaleId) {
       return res.status(400).json({ error: 'merchandiseData y pointOfSaleId son requeridos' });
     }
+    if (!merchandiseData.clientId) {
+      return res.status(400).json({ error: 'merchandiseData.clientId es requerido' });
+    }
     if (!merchandiseData.merchandiseTypeId) {
       return res.status(400).json({ error: 'merchandiseData.merchandiseTypeId es obligatorio (selección del tipo de mercancía)' });
     }
     const result = await admissionService.startAdmission(merchandiseData, pointOfSaleId, userId);
     res.json(result);
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    const msg = (err as Error).message;
+    const status = msg.includes('Cliente no encontrado') || msg.includes('cliente es requerido') ? 400 : 500;
+    res.status(status).json({ error: msg });
   }
 });
 

@@ -175,24 +175,14 @@ Desglose atómico de la implementación basado en los flujos de Ciudad y Aeropue
 
 ## Fase 5: Integraciones Externas
 
-### 5.1 Integración DeprisaCheck
+> **Nota:** No se implementan integraciones externas. La información proviene exclusivamente de la base de datos.
 
-- [ ] **Tarea 5.1.1**: Definir contrato/cliente para API DeprisaCheck (clasificación, restricciones, permisos)
-- [ ] **Tarea 5.1.2**: Implementar cliente HTTP/servicio para llamadas a DeprisaCheck
-- [ ] **Tarea 5.1.3**: Configurar credenciales y URL en variables de entorno
-- [ ] **Tarea 5.1.4**: Implementar fallback o modo mock para desarrollo sin DeprisaCheck
+### 5.1 Integración DeprisaCheck — No aplica
+- La clasificación, restricciones y permisos se obtienen de la BD (MerchandiseTypeCatalog, ClientRestriction, HandlingPermission).
 
-### 5.2 Integración Servicio de Correo
+### 5.2 Integración Servicio de Correo — No implementar
 
-- [ ] **Tarea 5.2.1**: Integrar servicio de envío de correo (SMTP, SendGrid, etc.)
-- [ ] **Tarea 5.2.2**: Crear plantilla de correo para notificación de rechazo con lista de comprobación
-- [ ] **Tarea 5.2.3**: Configurar variables de entorno para correo
-
-### 5.3 Integración SGD / Gestión Documental
-
-- [ ] **Tarea 5.3.1**: Definir interfaz para almacenamiento de documentos (SGD o storage)
-- [ ] **Tarea 5.3.2**: Implementar subida de documentación archivada
-- [ ] **Tarea 5.3.3**: Implementar generación de PDF para guías
+### 5.3 Integración SGD / Gestión Documental — No implementar
 
 ---
 
@@ -205,16 +195,16 @@ Desglose atómico de la implementación basado en los flujos de Ciudad y Aeropue
 
 ### 6.2 Pruebas de Integración
 
-- [ ] **Tarea 6.2.1**: Flujo completo admisión mercancía estándar (Ciudad y ATO)
-- [ ] **Tarea 6.2.2**: Flujo completo admisión mercancía peligrosa (Ciudad: manejo permitido/rechazo)
-- [ ] **Tarea 6.2.3**: Flujo completo admisión mercancía peligrosa (ATO: DeprisaCheck aceptación/rechazo)
-- [ ] **Tarea 6.2.4**: Flujo de rechazo por restricciones y por usuarios no habilitados
-- [ ] **Tarea 6.2.5**: Flujo de recepción de lista de comprobación
+- [x] **Tarea 6.2.1**: Flujo completo admisión mercancía estándar (Ciudad y ATO)
+- [x] **Tarea 6.2.2**: Flujo completo admisión mercancía peligrosa (Ciudad: manejo permitido/rechazo)
+- [x] **Tarea 6.2.3**: Flujo completo admisión mercancía peligrosa (ATO: DeprisaCheck aceptación/rechazo)
+- [x] **Tarea 6.2.4**: Flujo de rechazo por restricciones y por usuarios no habilitados
+- [x] **Tarea 6.2.5**: Flujo de recepción de lista de comprobación
 
-### 6.3 Pruebas End-to-End (opcional)
+### 6.3 Pruebas End-to-End
 
-- [ ] **Tarea 6.3.1**: Configurar E2E con Playwright o similar
-- [ ] **Tarea 6.3.2**: E2E para flujo de admisión vía UI (si aplica)
+- [x] **Tarea 6.3.1**: Configurar E2E con Playwright
+- [x] **Tarea 6.3.2**: E2E para flujo de admisión vía UI
 
 ---
 
@@ -230,7 +220,7 @@ Desglose atómico de la implementación basado en los flujos de Ciudad y Aeropue
 
 - [ ] **Tarea 7.2.1**: Configurar pipeline CI/CD (GitHub Actions, GitLab CI, etc.)
 - [ ] **Tarea 7.2.2**: Definir estrategia de despliegue (blue-green, rolling)
-- [ ] **Tarea 7.2.3**: Configurar monitoreo y logging
+- [x] **Tarea 7.2.3**: Configurar monitoreo y logging (pino, pino-http, health con chequeo BD)
 
 ---
 

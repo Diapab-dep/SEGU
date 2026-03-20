@@ -14,14 +14,14 @@ export const merchandiseChecklistRepository = {
   async findById(id: string) {
     return prisma.merchandiseChecklist.findUnique({
       where: { id },
-      include: { merchandise: true, template: { include: { items: true } } },
+      include: { Merchandise: true, ChecklistTemplate: { include: { ChecklistTemplateItem: true } } },
     });
   },
 
   async findByMerchandise(merchandiseId: string) {
     return prisma.merchandiseChecklist.findMany({
       where: { merchandiseId },
-      include: { template: { include: { items: true } } },
+      include: { ChecklistTemplate: { include: { ChecklistTemplateItem: true } } },
     });
   },
 

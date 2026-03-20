@@ -4,7 +4,7 @@ export const clientRepository = {
   async findById(id: string) {
     return prisma.client.findUnique({
       where: { id },
-      include: { restrictions: { where: { isActive: true } } },
+      include: { ClientRestriction: { where: { isActive: true } } },
     });
   },
 

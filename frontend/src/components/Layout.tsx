@@ -1,5 +1,6 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Footer } from './Footer';
 
 export function Layout() {
   const { user, logout } = useAuth();
@@ -13,7 +14,9 @@ export function Layout() {
   return (
     <div className="layout">
       <header className="header">
-        <Link to="/" className="logo">DeprisaCheck</Link>
+        <Link to="/" className="logo">
+        <img src="/deprisa-logo.png" alt="Deprisa" className="logo-img" />
+      </Link>
         <nav>
           {user?.role === 'asesor' && (
             <>
@@ -38,6 +41,7 @@ export function Layout() {
       <main className="main">
         <Outlet />
       </main>
+      <Footer />
     </div>
   );
 }

@@ -8,14 +8,14 @@ export const checklistTemplateRepository = {
         pointOfSaleType,
         isActive: true,
       },
-      include: { items: { orderBy: { order: 'asc' } } },
+      include: { ChecklistTemplateItem: { orderBy: { order: 'asc' } } },
     });
   },
 
   async findById(id: string) {
     return prisma.checklistTemplate.findUnique({
       where: { id },
-      include: { items: { orderBy: { order: 'asc' } } },
+      include: { ChecklistTemplateItem: { orderBy: { order: 'asc' } } },
     });
   },
 };
