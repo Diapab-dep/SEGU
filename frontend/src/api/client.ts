@@ -21,6 +21,8 @@ export const api = {
   startAdmission: (data: { merchandiseData: MerchandiseData; pointOfSaleId: string }) =>
     fetchApi<AdmissionResult>('/admission/start', { method: 'POST', body: JSON.stringify(data) }),
   getAdmissionStatus: (id: string) => fetchApi<AdmissionStatus>(`/admission/${id}/status`),
+  acceptAdmission: (id: string) =>
+    fetchApi<{ merchandiseId: string; status: string }>('/admission/' + id + '/accept', { method: 'POST' }),
   rejectAdmission: (id: string, reason: string) =>
     fetchApi('/admission/' + id + '/reject', { method: 'POST', body: JSON.stringify({ reason }) }),
 

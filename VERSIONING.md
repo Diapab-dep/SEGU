@@ -81,6 +81,33 @@ La versión se expone en el Footer de la aplicación y en `GET /api/version`.
 
 ---
 
+### v1.2.0 — 2026-03-22 — Docker, UI y Marca
+
+**Backend**
+- Express sirve frontend estático en producción (`NODE_ENV=production`)
+- Ruta catch-all SPA para React Router en producción
+- Login con usuario y contraseña via `/api/auth/login`
+- Rate limiter aplicado a `/api/deprisacheck/login`
+
+**Frontend**
+- Radio buttons Sí/No/N/A en DeprisaCheck (reemplaza checkbox único)
+- Botones "Marcar todas Sí/No/N/A" encima de la lista
+- Login rediseñado: card dos zonas (header azul corporativo + cuerpo blanco)
+- Logo DEPRISA con fondo transparente integrado en header azul
+- Favicon DEPRISA en tab del navegador
+- Colores actualizados a Manual de Marca 2025: `#29519a` / `#cc3333` / `#666666` / `#cccccc`
+
+**Infraestructura**
+- `Dockerfile` multi-stage (frontend-build → backend-build → production, imagen única)
+- `docker-compose.yml` con servicio `app` (Node 20 Alpine) + `db` (PostgreSQL 16 Alpine)
+- `.dockerignore` optimizado (excluye test, docs, POWER, node_modules)
+- Healthcheck en `/health` para Docker y load balancers
+
+**Seed**
+- Usuarios de prueba con hashes bcrypt correctos: admin/admin123, supervisor/super123, asesor_ato/asesor123
+
+---
+
 ## Próximos pasos recomendados
 
 | Prioridad | Tarea |

@@ -27,7 +27,7 @@ export function Dashboard() {
       <section className="platform-modules">
         <h3>Módulos disponibles</h3>
         <div className="dashboard-cards">
-          {user?.role === 'asesor' && (
+          {(user?.role === 'asesor' || user?.role === 'admin') && (
             <>
               <Link to="/admission" className="card card-module">
                 <h4>Nueva Admisión</h4>
@@ -51,7 +51,7 @@ export function Dashboard() {
             <>
               <Link to="/users" className="card card-module">
                 <h4>Usuarios</h4>
-                <p>Gestione usuarios, roles, puntos de venta y habilitación DeprisaCheck.</p>
+                <p>Gestione cuentas de usuario, roles y accesos a la plataforma.</p>
               </Link>
               <Link to="/points-of-sale" className="card card-module">
                 <h4>Puntos de Venta</h4>

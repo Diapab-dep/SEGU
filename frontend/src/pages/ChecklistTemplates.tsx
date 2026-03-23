@@ -180,7 +180,7 @@ export function ChecklistTemplates() {
           <div>
             <h3>{selected.name} — Preguntas</h3>
             <button className="btn-primary" style={{ marginBottom: '1rem' }} onClick={() => { setShowItemForm(true); setEditingItem(null); setItemForm({ text: '', required: false }); }}>
-              Agregar pregunta
+              Agregar ítem
             </button>
 
             {showItemForm && (
@@ -193,7 +193,7 @@ export function ChecklistTemplates() {
                     Respuesta requerida
                   </label>
                   <div className="button-group">
-                    <button type="submit">{editingItem ? 'Guardar' : 'Agregar'}</button>
+                    <button type="submit">Guardar</button>
                     <button type="button" className="btn-secondary" onClick={() => { setShowItemForm(false); setEditingItem(null); }}>Cancelar</button>
                   </div>
                 </form>

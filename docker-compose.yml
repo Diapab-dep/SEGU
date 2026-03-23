@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: deprisacheck:latest
+    container_name: deprisacheck-app
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: ${DATABASE_URL}
+      FRONTEND_URL: ${FRONTEND_URL:-}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: deprisacheck-db
+    environment:
+      POSTGRES_USER: deprisa
+      POSTGRES_PASSWORD: deprisa
+      POSTGRES_DB: deprisacheck
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U deprisa -d deprisacheck']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

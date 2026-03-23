@@ -10,7 +10,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, role: Role) => void;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -22,8 +22,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const login = (username: string, role: Role) => {
-    const u = { id: '1', username, role };
+  const login = async (username: string, password: string) => {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Error al iniciar sesión');
+    const u: User = { id: data.id, username: data.username, role: data.role };
     setUser(u);
     localStorage.setItem('deprisa-user', JSON.stringify(u));
   };

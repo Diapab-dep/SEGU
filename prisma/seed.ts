@@ -23,6 +23,9 @@ async function main() {
     });
   }
 
+  // Limpiar restricciones acumuladas por tests anteriores
+  await prisma.clientRestriction.deleteMany({ where: { clientId: 'client-1' } });
+
   const client = await prisma.client.upsert({
     where: { id: 'client-1' },
     update: {},
@@ -42,21 +45,25 @@ async function main() {
 
   const posAto = await prisma.pointOfSale.upsert({
     where: { id: 'pos-ato-1' },
-    update: {},
+    update: { name: 'ATO Punto 1' },
     create: {
       id: 'pos-ato-1',
-      name: 'Punto ATO 1',
+      name: 'ATO Punto 1',
       type: 'airport_ato',
       isActive: true,
     },
   });
 
+  // Contraseñas de prueba (bcrypt 10 rounds):
+  // asesor_ato → asesor123
+  // supervisor → super123
+  // admin      → admin123
   await prisma.user.upsert({
     where: { username: 'asesor_ato' },
-    update: { role: 'advisor' },
+    update: { role: 'advisor', passwordHash: '$2b$10$oa6x.NAEM/K9XgFKeWw3ROfbKV4vPWH.Ma9jfOl9J0tl.ZJrEkicC' },
     create: {
       username: 'asesor_ato',
-      passwordHash: 'hash',
+      passwordHash: '$2b$10$oa6x.NAEM/K9XgFKeWw3ROfbKV4vPWH.Ma9jfOl9J0tl.ZJrEkicC',
       email: 'asesor@example.com',
       role: 'advisor',
       isDeprisacheckEnabled: true,
@@ -66,10 +73,10 @@ async function main() {
 
   await prisma.user.upsert({
     where: { username: 'supervisor' },
-    update: {},
+    update: { passwordHash: '$2b$10$qUdTC8zweodbPzUK/ckedeYHrmncwvpb5V5xZvzrRchR2LULuS3zS' },
     create: {
       username: 'supervisor',
-      passwordHash: 'hash',
+      passwordHash: '$2b$10$qUdTC8zweodbPzUK/ckedeYHrmncwvpb5V5xZvzrRchR2LULuS3zS',
       email: 'supervisor@example.com',
       role: 'supervisor',
     },
@@ -77,10 +84,10 @@ async function main() {
 
   await prisma.user.upsert({
     where: { username: 'admin' },
-    update: {},
+    update: { passwordHash: '$2b$10$kxv9PiIL3mDvG3jhsR8ToeCxtOVzSzzEcXtPL1i8FpCtXl7SFE3Ue' },
     create: {
       username: 'admin',
-      passwordHash: 'hash',
+      passwordHash: '$2b$10$kxv9PiIL3mDvG3jhsR8ToeCxtOVzSzzEcXtPL1i8FpCtXl7SFE3Ue',
       email: 'admin@example.com',
       role: 'admin',
     },
@@ -93,12 +100,12 @@ async function main() {
   if (typeBaterias) {
     const template = await prisma.checklistTemplate.upsert({
       where: { id: 'template-1' },
-      update: {},
+      update: { pointOfSaleType: 'ato' },
       create: {
         id: 'template-1',
         name: 'Lista Baterías de Litio',
         merchandiseTypeId: typeBaterias.id,
-        pointOfSaleType: 'airport_ato',
+        pointOfSaleType: 'ato',
         isActive: true,
       },
     });

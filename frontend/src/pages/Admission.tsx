@@ -14,11 +14,13 @@ export function Admission() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.getMerchandiseTypes().then(setTypes).catch((e) => setError(e.message));
-    api.getPointsOfSale().then((list) => {
-      setPosList(list);
-      if (list.length > 0) setPointOfSaleId(list[0].id);
-    }).catch((e) => setError(e.message));
+    Promise.all([api.getMerchandiseTypes(), api.getPointsOfSale()])
+      .then(([types, posList]) => {
+        setTypes(types);
+        setPosList(posList);
+        if (posList.length > 0) setPointOfSaleId(posList[0].id);
+      })
+      .catch((e) => setError(e.message));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,7 +92,7 @@ export function Admission() {
           <select value={pointOfSaleId} onChange={(e) => setPointOfSaleId(e.target.value)}>
             {posList.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} ({p.type === 'ato' ? 'ATO' : 'Ciudad'})
+                {p.name} ({(p.type === 'ato' || p.type === 'airport_ato') ? 'ATO' : 'Ciudad'})
               </option>
             ))}
           </select>

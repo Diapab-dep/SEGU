@@ -95,60 +95,59 @@
   padding: 2rem 1rem 3rem;
 }
 
-.login-hero {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: white;
-}
-
-.login-hero h1 {
-  margin: 0 0 0.5rem;
-  font-size: 2rem;
-  font-weight: 700;
-  color: white;
-}
-
-.login-hero p {
-  margin: 0;
-  font-size: 1rem;
-  opacity: 0.95;
-}
-
 .login-card {
   background: white;
-  padding: 2.5rem;
-  border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 380px;
+  max-width: 420px;
+  overflow: hidden;
+}
+
+.login-card-header {
+  background: #eaeef5;
+  padding: 1.75rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-logo {
+  width: 100%;
+  height: auto;
+  max-height: 80px;
+  display: block;
+  object-fit: contain;
+}
+
+.login-card-body {
+  padding: 2rem 2.5rem 2.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
 
-.login-logo {
-  max-width: 100%;
-  width: 100%;
-  height: auto;
-  max-height: 70px;
-  margin: 0 auto 0.5rem;
-  display: block;
-  object-fit: contain;
+.login-title {
+  margin: 0 0 0.3rem;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--color-text);
 }
 
-.login-card > p {
-  margin: 0 0 1.5rem 0;
+.login-subtitle {
+  margin: 0 0 1.75rem;
+  font-size: 0.9rem;
   color: var(--color-secondary);
-  font-size: 0.95rem;
 }
 
-.login-card form {
+
+.login-card-body form {
   width: 100%;
 }
 
-.login-card input,
-.login-card select {
+.login-card-body input,
+.login-card-body select {
   width: 100%;
   padding: 0.65rem 0.85rem;
   margin-bottom: 0.85rem;
@@ -158,28 +157,35 @@
   color: var(--color-text);
 }
 
-.login-card input:focus,
-.login-card select:focus {
+.login-card-body input:focus,
+.login-card-body select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(41, 81, 154, 0.2);
 }
 
-.login-card button {
+.login-card-body button {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.8rem;
   margin-top: 0.5rem;
   background: var(--color-primary);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
+  letter-spacing: 0.03em;
+  transition: background 0.2s;
 }
 
-.login-card button:hover {
+.login-card-body button:hover:not(:disabled) {
   background: var(--color-primary-hover);
+}
+
+.login-card-body button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Page */
@@ -413,6 +419,26 @@
   width: auto;
 }
 
+.checklist-options {
+  display: flex;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.checklist-option {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.checklist-option input[type="radio"] {
+  width: auto;
+  cursor: pointer;
+}
+
 .button-group {
   display: flex;
   gap: 1rem;
@@ -457,7 +483,7 @@
 }
 
 .btn-secondary:hover {
-  background: #555;
+  background: var(--color-text);
 }
 
 .btn-danger {
@@ -604,7 +630,7 @@
 .status-deprisacheck   { background: #ede9fe; color: #4338ca; }
 .status-requires_deprisacheck { background: #ede9fe; color: #4338ca; }
 .status-accepted       { background: #d1fae5; color: #065f46; }
-.status-rejected       { background: #fee2e2; color: #991b1b; }
+.status-rejected       { background: var(--color-accent-light); color: var(--color-accent-hover); }
 
 /* Pagination */
 .pagination {
@@ -698,16 +724,16 @@
 }
 
 .flow-step-accepted  { background: #d1fae5; color: #065f46; }
-.flow-step-rejected  { background: #fee2e2; color: #991b1b; }
+.flow-step-rejected  { background: var(--color-accent-light); color: var(--color-accent-hover); }
 .flow-step-requires_deprisacheck { background: #ede9fe; color: #4338ca; }
 .flow-step-pending   { background: #f3f4f6; color: #374151; }
 
 .rejection-reason {
-  background: #fee2e2;
-  border: 1px solid #fca5a5;
+  background: var(--color-accent-light);
+  border: 1px solid var(--color-accent);
   border-radius: 6px;
   padding: 0.75rem 1rem;
-  color: #991b1b;
+  color: var(--color-accent-hover);
   margin-top: 0.75rem;
   font-size: 0.95rem;
 }

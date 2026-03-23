@@ -5,6 +5,7 @@
 import request from 'supertest';
 import app from '../../src/api';
 import { prisma } from '../../src/lib/prisma';
+import { merchandiseRepository } from '../../src/repositories/merchandise.repository';
 import { setupIntegrationTests } from '../setup-integration';
 
 beforeAll(async () => {
@@ -24,13 +25,11 @@ describe('6.2.5 Flujo recepción de lista de comprobación', () => {
     const template = await prisma.checklistTemplate.findFirst({
       where: { merchandiseTypeId: typeBaterias!.id },
     });
-    const merch = await prisma.merchandise.create({
-      data: {
-        clientId: 'client-sin-restriccion',
-        pointOfSaleId: 'pos-ato-1',
-        merchandiseTypeId: typeBaterias!.id,
-        status: 'requires_deprisacheck',
-      },
+    const merch = await merchandiseRepository.create({
+      clientId: 'client-sin-restriccion',
+      pointOfSaleId: 'pos-ato-1',
+      merchandiseTypeId: typeBaterias!.id,
+      status: 'requires_deprisacheck',
     });
     merchandiseId = merch.id;
     templateId = template!.id;

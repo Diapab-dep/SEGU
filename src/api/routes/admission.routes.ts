@@ -48,6 +48,23 @@ router.get('/:merchandiseId/status', async (req, res) => {
   }
 });
 
+router.post('/:merchandiseId/accept', async (req, res) => {
+  try {
+    const { merchandiseId } = req.params;
+    const merchandise = await merchandiseRepository.findById(merchandiseId);
+    if (!merchandise) {
+      return res.status(404).json({ error: 'Mercancía no encontrada' });
+    }
+    if (merchandise.status !== 'pending') {
+      return res.status(400).json({ error: `Solo se puede aprobar desde estado pending. Estado actual: ${merchandise.status}` });
+    }
+    const updated = await merchandiseRepository.updateStatus(merchandiseId, 'accepted');
+    res.json({ merchandiseId: updated.id, status: updated.status });
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
+
 router.post('/:merchandiseId/reject', async (req, res) => {
   try {
     const { merchandiseId } = req.params;

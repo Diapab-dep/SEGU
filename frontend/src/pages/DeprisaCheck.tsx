@@ -41,6 +41,13 @@ export function DeprisaCheck() {
     setResponses((r) => ({ ...r, [itemId]: value }));
   };
 
+  const handleSelectAll = (value: 'true' | 'false' | 'na') => {
+    if (!selectedTemplate) return;
+    const all: Record<string, string> = {};
+    selectedTemplate.items.forEach((item) => { all[item.id] = value; });
+    setResponses(all);
+  };
+
   const handleSave = async () => {
     if (!merchandiseId || !selectedTemplate) return;
     setLoading(true);
@@ -149,16 +156,30 @@ export function DeprisaCheck() {
           {templates.length > 0 && (
             <div className="checklist-section">
               <h3>{selectedTemplate?.name}</h3>
+              <div className="button-group" style={{ marginBottom: 12 }}>
+                <button className="btn-secondary" onClick={() => handleSelectAll('true')} disabled={loading}>Marcar todas Sí</button>
+                <button className="btn-secondary" onClick={() => handleSelectAll('false')} disabled={loading}>Marcar todas No</button>
+                <button className="btn-secondary" onClick={() => handleSelectAll('na')} disabled={loading}>Marcar todas N/A</button>
+              </div>
               <div className="checklist-items">
                 {selectedTemplate?.items.map((item) => (
-                  <label key={item.id} className="checklist-item">
-                    <span>{item.text} {item.required && '*'}</span>
-                    <input
-                      type="checkbox"
-                      checked={!!responses[item.id]}
-                      onChange={(e) => handleResponse(item.id, e.target.checked)}
-                    />
-                  </label>
+                  <div key={item.id} className="checklist-item">
+                    <span style={{ flex: 1 }}>{item.text} {item.required && <strong>*</strong>}</span>
+                    <div className="checklist-options">
+                      {(['true', 'false', 'na'] as const).map((val) => (
+                        <label key={val} className="checklist-option">
+                          <input
+                            type="radio"
+                            name={item.id}
+                            value={val}
+                            checked={responses[item.id] === val}
+                            onChange={() => handleResponse(item.id, val)}
+                          />
+                          {val === 'true' ? 'Sí' : val === 'false' ? 'No' : 'N/A'}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
               <div className="button-group">

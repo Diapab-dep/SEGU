@@ -36,7 +36,7 @@ describe('6.2.1 Flujo admisión mercancía estándar (Ciudad y ATO)', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('pending');
-    expect(res.body.merchandiseId).toBeDefined();
+    expect(res.body.merchandiseId).toMatch(/^DC-\d{8}-[A-Z0-9]{4}$/);
     expect(res.body.requiresDeprisacheck).toBe(false);
   });
 

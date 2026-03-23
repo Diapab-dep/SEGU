@@ -45,7 +45,7 @@ router.get('/checklists/templates', async (req, res) => {
       return res.status(400).json({ error: 'merchandiseTypeId y pointOfSaleType son requeridos' });
     }
     const templates = await deprisacheckService.getChecklistTemplates(merchandiseTypeId, pointOfSaleType);
-    res.json(templates);
+    res.json(templates.map((t: any) => ({ ...t, items: t.ChecklistTemplateItem ?? [] })));
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
   }

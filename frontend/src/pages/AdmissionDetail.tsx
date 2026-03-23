@@ -35,6 +35,23 @@ export function AdmissionDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [checklistOpen, setChecklistOpen] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState('');
+
+  async function handleAccept() {
+    if (!id) return;
+    setActionLoading(true);
+    setActionError('');
+    try {
+      await api.acceptAdmission(id);
+      const updated = await api.getAdmissionDetail(id);
+      setAdmission(updated);
+    } catch (e) {
+      setActionError((e as Error).message);
+    } finally {
+      setActionLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (!id) return;
@@ -61,7 +78,7 @@ export function AdmissionDetail() {
       {/* Cabecera */}
       <div className="detail-card">
         <div className="detail-grid">
-          <div><label>Cliente</label><p>{admission.client.name}</p></div>
+          <div><label>Empresa</label><p>{admission.client.name}</p></div>
           <div><label>Punto de venta</label><p>{admission.pointOfSale.name} <span className="role-badge">{admission.pointOfSale.type.toUpperCase()}</span></p></div>
           <div><label>Tipo de mercancía</label><p>{admission.merchandiseType.name}</p></div>
           <div><label>Fecha</label><p>{new Date(admission.createdAt).toLocaleString('es-CO')}</p></div>
@@ -77,6 +94,14 @@ export function AdmissionDetail() {
         {admission.status === 'rejected' && admission.rejectionReason && (
           <div className="rejection-reason">
             <strong>Razón de rechazo:</strong> {admission.rejectionReason}
+          </div>
+        )}
+        {admission.status === 'pending' && (
+          <div style={{ marginTop: 16 }}>
+            <button className="btn-primary" onClick={handleAccept} disabled={actionLoading}>
+              {actionLoading ? 'Aprobando...' : 'Aprobar admisión'}
+            </button>
+            {actionError && <p className="error" style={{ marginTop: 8 }}>{actionError}</p>}
           </div>
         )}
       </div>

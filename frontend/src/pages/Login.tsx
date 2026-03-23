@@ -5,41 +5,58 @@ import { Footer } from '../components/Footer';
 
 export function Login() {
   const [username, setUsername] = useState('');
-  const [role, setRole] = useState<'asesor' | 'supervisor' | 'admin'>('asesor');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!username.trim()) return;
-    login(username.trim(), role);
-    navigate('/');
+    if (!username.trim() || !password) return;
+    setLoading(true);
+    setError('');
+    try {
+      await login(username.trim(), password);
+      navigate('/');
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-page">
-      <div className="login-hero">
-        <h1>DeprisaCheck</h1>
-        <p>Plataforma de admisión de mercancía</p>
-      </div>
       <div className="login-card">
-        <img src="/deprisa-logo-login.png" alt="Deprisa" className="login-logo" />
-        <p>Ingrese a la plataforma para gestionar el proceso de admisión.</p>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoFocus
-          />
-          <select value={role} onChange={(e) => setRole(e.target.value as 'asesor' | 'supervisor' | 'admin')}>
-            <option value="asesor">Asesor</option>
-            <option value="supervisor">Supervisor</option>
-            <option value="admin">Administrador</option>
-          </select>
-          <button type="submit">Entrar</button>
-        </form>
+        <div className="login-card-header">
+          <img src="/deprisa-logo-login.png" alt="Deprisa" className="login-logo" />
+        </div>
+        <div className="login-card-body">
+          <h1 className="login-title">DeprisaCheck</h1>
+          <p className="login-subtitle">Plataforma de admisión de mercancía</p>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoFocus
+              disabled={loading}
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+            />
+            {error && <p className="error">{error}</p>}
+            <button type="submit" disabled={loading}>
+              {loading ? 'Ingresando...' : 'Entrar'}
+            </button>
+          </form>
+        </div>
       </div>
       <Footer />
     </div>

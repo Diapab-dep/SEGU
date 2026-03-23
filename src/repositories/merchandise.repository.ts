@@ -1,6 +1,13 @@
 import { prisma } from '../lib/prisma';
 type MerchandiseStatus = 'pending' | 'rejected' | 'requires_deprisacheck' | 'accepted' | 'in_transit';
 
+function generateTrackingId(): string {
+  const d = new Date().toISOString().slice(0, 10).replace(/-/g, ''); // YYYYMMDD
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const rand = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  return `DC-${d}-${rand}`;
+}
+
 export const merchandiseRepository = {
   async create(data: {
     clientId: string;
@@ -12,7 +19,7 @@ export const merchandiseRepository = {
     dimensions?: string;
     status?: MerchandiseStatus;
   }) {
-    return prisma.merchandise.create({ data });
+    return prisma.merchandise.create({ data: { id: generateTrackingId(), ...data } });
   },
 
   async findById(id: string) {

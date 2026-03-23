@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import authRoutes from './routes/auth.routes';
 import admissionRoutes from './routes/admission.routes';
 import merchandiseTypesRoutes from './routes/merchandise-types.routes';
 import usersRoutes from './routes/users.routes';
@@ -28,10 +29,10 @@ const allowedOrigins = process.env.FRONTEND_URL
   : ['http://localhost:5173', 'http://localhost:3000'];
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-// Rate limiting para login: máx 10 intentos por IP cada 15 min
+// Rate limiting para login: máx 10 intentos por IP cada 15 min (desactivado en test)
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: process.env.NODE_ENV === 'test' ? 1000 : 10,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Demasiados intentos. Intente de nuevo en 15 minutos.' },
@@ -40,6 +41,7 @@ const loginLimiter = rateLimit({
 app.use(requestLogger);
 app.use(express.json({ limit: '1mb' }));
 
+app.use('/api/auth', authRoutes);
 app.use('/api/admission', admissionRoutes);
 app.use('/api/merchandise-types', merchandiseTypesRoutes);
 app.use('/api/users', usersRoutes);
@@ -73,5 +75,12 @@ async function checkDatabase(): Promise<boolean> {
 const path = require('path');
 const pkg = require(path.join(__dirname, '../../package.json'));
 app.get('/api/version', (_, res) => res.json({ version: pkg.version }));
+
+// Servir frontend en producción
+if (process.env.NODE_ENV === 'production') {
+  const staticPath = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(staticPath));
+  app.get('*', (_, res) => res.sendFile(path.join(staticPath, 'index.html')));
+}
 
 export default app;
