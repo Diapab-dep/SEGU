@@ -12,13 +12,17 @@ interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
+  getToken: () => string | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const USER_KEY  = 'deprisa-user';
+const TOKEN_KEY = 'deprisa-token';
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('deprisa-user');
+    const saved = localStorage.getItem(USER_KEY);
     return saved ? JSON.parse(saved) : null;
   });
 
@@ -30,18 +34,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Error al iniciar sesión');
+
     const u: User = { id: data.id, username: data.username, role: data.role };
     setUser(u);
-    localStorage.setItem('deprisa-user', JSON.stringify(u));
+    localStorage.setItem(USER_KEY, JSON.stringify(u));
+    localStorage.setItem(TOKEN_KEY, data.token);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('deprisa-user');
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
   };
 
+  const getToken = () => localStorage.getItem(TOKEN_KEY);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, getToken }}>
       {children}
     </AuthContext.Provider>
   );

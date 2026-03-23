@@ -218,9 +218,61 @@ Desglose atómico de la implementación basado en los flujos de Ciudad y Aeropue
 
 ### 7.2 Despliegue
 
-- [ ] **Tarea 7.2.1**: Configurar pipeline CI/CD (GitHub Actions, GitLab CI, etc.)
+- [ ] **Tarea 7.2.1**: Configurar pipeline CI/CD (GitHub Actions ya tiene workflow base en `.github/workflows/ci.yml`, falta stage de deploy)
 - [ ] **Tarea 7.2.2**: Definir estrategia de despliegue (blue-green, rolling)
 - [x] **Tarea 7.2.3**: Configurar monitoreo y logging (pino, pino-http, health con chequeo BD)
+- [x] **Tarea 7.2.4**: Crear `Dockerfile` multi-stage (frontend-build → backend-build → producción, Node 20 Alpine)
+- [x] **Tarea 7.2.5**: Crear `docker-compose.yml` con servicios `app` + `db` (PostgreSQL 16 Alpine)
+- [ ] **Tarea 7.2.6**: Desplegar imagen Docker en servidor Azure `20.102.51.145`
+  - Servidor activo (TCP puerto 22 OPEN verificado)
+  - Bloqueado desde red local — requiere VPN corporativa o Azure Bastion
+  - Repo actualizado en GitHub (`Diapab-dep/PELI`) con todos los cambios v1.2.0
+  - Comandos de despliegue documentados (ver sección abajo)
+- [ ] **Tarea 7.2.7**: Abrir puerto 3000 en Azure NSG (Inbound rule) para acceso público a la app
+- [ ] **Tarea 7.2.8**: Ejecutar `npm run db:seed` en servidor para cargar usuarios de prueba una vez la BD Azure PostgreSQL sea accesible
+
+### 7.3 Base de Datos (Pendiente)
+
+- [ ] **Tarea 7.3.1**: Agregar IP del servidor de despliegue al firewall de Azure PostgreSQL (`az-psgflx-use-qa.postgres.database.azure.com`)
+- [ ] **Tarea 7.3.2**: Ejecutar `npx prisma migrate deploy` en producción para aplicar migraciones pendientes
+- [ ] **Tarea 7.3.3**: Ejecutar `npm run db:seed` para cargar datos iniciales y usuarios de prueba
+
+### 7.4 Seguridad (P1 — pendiente)
+
+- [ ] **Tarea 7.4.1**: Implementar autenticación JWT — reemplazar header `x-user-id` en todos los endpoints (actualmente sin validación de token)
+- [ ] **Tarea 7.4.2**: Agregar middleware de autorización por rol en todos los endpoints (actualmente todos son públicos)
+- [ ] **Tarea 7.4.3**: Validar entrada con librería (zod o joi) en endpoints críticos (admisión, usuarios, checklist)
+
+---
+
+## Comandos de Despliegue en Servidor (20.102.51.145)
+
+```bash
+# Conectar (requiere VPN o Azure Bastion)
+ssh pdiaz@20.102.51.145
+
+# En el servidor:
+cd ~ && git clone https://github.com/Diapab-dep/PELI.git deprisacheck || (cd deprisacheck && git pull origin main)
+cd ~/deprisacheck
+
+# Configurar .env de producción
+cat > .env << 'EOF'
+DATABASE_URL=postgresql://adminpsql:PASS@az-psgflx-use-qa.postgres.database.azure.com:5432/postgres?sslmode=require
+NODE_ENV=production
+PORT=3000
+FRONTEND_URL=http://20.102.51.145:3000
+EOF
+
+# Migrar BD y cargar seed
+docker compose run --rm app npx prisma migrate deploy
+docker compose run --rm app npm run db:seed
+
+# Levantar
+docker compose up -d --build
+
+# Verificar
+curl http://localhost:3000/health
+```
 
 ---
 

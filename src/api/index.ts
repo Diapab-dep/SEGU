@@ -16,6 +16,8 @@ import pointsOfSaleRoutes from './routes/points-of-sale.routes';
 import checklistTemplatesRoutes from './routes/checklist-templates.routes';
 import clientRestrictionsRoutes from './routes/client-restrictions.routes';
 import { requestLogger } from './middleware/request-logger';
+import { authenticate } from './middleware/auth.middleware';
+import { authorize } from './middleware/authorize';
 import { prisma } from '../lib/prisma';
 
 const app = express();
@@ -41,20 +43,23 @@ const loginLimiter = rateLimit({
 app.use(requestLogger);
 app.use(express.json({ limit: '1mb' }));
 
+// Rutas públicas
 app.use('/api/auth', authRoutes);
-app.use('/api/admission', admissionRoutes);
-app.use('/api/merchandise-types', merchandiseTypesRoutes);
-app.use('/api/users', usersRoutes);
 app.use('/api/deprisacheck/login', loginLimiter);
-app.use('/api/deprisacheck', deprisacheckRoutes);
-app.use('/api/guides', guidesRoutes);
-app.use('/api/manifests', manifestsRoutes);
-app.use('/api/operations', operationsRoutes);
-app.use('/api/checklists', checklistsRoutes);
-app.use('/api/admissions', supervisorRoutes);
-app.use('/api/points-of-sale', pointsOfSaleRoutes);
-app.use('/api/checklist-templates', checklistTemplatesRoutes);
-app.use('/api', clientRestrictionsRoutes);
+
+// Rutas protegidas — requieren JWT válido
+app.use('/api/merchandise-types',    authenticate, merchandiseTypesRoutes);
+app.use('/api/admission',            authenticate, authorize('advisor', 'admin'), admissionRoutes);
+app.use('/api/deprisacheck',         authenticate, authorize('advisor', 'admin'), deprisacheckRoutes);
+app.use('/api/admissions',           authenticate, authorize('supervisor', 'admin'), supervisorRoutes);
+app.use('/api/users',                authenticate, authorize('admin'), usersRoutes);
+app.use('/api/points-of-sale',       authenticate, pointsOfSaleRoutes);
+app.use('/api/checklist-templates',  authenticate, checklistTemplatesRoutes);
+app.use('/api/guides',               authenticate, authorize('advisor', 'admin'), guidesRoutes);
+app.use('/api/manifests',            authenticate, authorize('advisor', 'admin'), manifestsRoutes);
+app.use('/api/operations',           authenticate, authorize('advisor', 'admin'), operationsRoutes);
+app.use('/api/checklists',           authenticate, checklistsRoutes);
+app.use('/api',                      authenticate, authorize('admin'), clientRestrictionsRoutes);
 
 app.get('/health', async (_, res) => {
   const dbOk = await checkDatabase();

@@ -1,13 +1,25 @@
 const API_BASE = '/api';
 
+function getAuthHeader(): Record<string, string> {
+  const token = localStorage.getItem('deprisa-token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeader(),
       ...options?.headers,
     },
   });
+  if (res.status === 401) {
+    localStorage.removeItem('deprisa-token');
+    localStorage.removeItem('deprisa-user');
+    window.location.href = '/login';
+    throw new Error('Sesión expirada. Inicie sesión nuevamente.');
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error((err as { error?: string }).error || res.statusText);
@@ -78,7 +90,7 @@ export const api = {
   updateChecklistTemplate: (id: string, data: Partial<{ name: string; merchandiseTypeId: string; pointOfSaleType: string }>) =>
     fetchApi<ChecklistTemplateDetail>(`/checklist-templates/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteChecklistTemplate: (id: string) =>
-    fetch(API_BASE + '/checklist-templates/' + id, { method: 'DELETE' }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
+    fetch(API_BASE + '/checklist-templates/' + id, { method: 'DELETE', headers: getAuthHeader() }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
   toggleChecklistTemplate: (id: string) =>
     fetchApi<ChecklistTemplateDetail>(`/checklist-templates/${id}/toggle`, { method: 'PATCH' }),
   addTemplateItem: (templateId: string, data: { text: string; required: boolean }) =>
@@ -86,7 +98,7 @@ export const api = {
   updateTemplateItem: (templateId: string, itemId: string, data: Partial<{ text: string; required: boolean; order: number }>) =>
     fetchApi<TemplateItem>(`/checklist-templates/${templateId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteTemplateItem: (templateId: string, itemId: string) =>
-    fetch(`${API_BASE}/checklist-templates/${templateId}/items/${itemId}`, { method: 'DELETE' }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
+    fetch(`${API_BASE}/checklist-templates/${templateId}/items/${itemId}`, { method: 'DELETE', headers: getAuthHeader() }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
   reorderTemplateItems: (templateId: string, items: { id: string; order: number }[]) =>
     fetchApi<{ ok: boolean }>(`/checklist-templates/${templateId}/items/reorder`, { method: 'PUT', body: JSON.stringify({ items }) }),
 
@@ -96,7 +108,7 @@ export const api = {
   createClientRestriction: (data: { clientId: string; merchandiseTypeId: string; restrictionType: string; pointOfSaleId?: string }) =>
     fetchApi<ClientRestriction>('/client-restrictions', { method: 'POST', body: JSON.stringify(data) }),
   deleteClientRestriction: (id: string) =>
-    fetch(`${API_BASE}/client-restrictions/${id}`, { method: 'DELETE' }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
+    fetch(`${API_BASE}/client-restrictions/${id}`, { method: 'DELETE', headers: getAuthHeader() }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
 
   // --- Usuarios ---
   getRoles: () => fetchApi<{ code: string; name: string }[]>('/users/roles'),
@@ -107,7 +119,7 @@ export const api = {
   updateUser: (id: string, data: Partial<CreateUserData>) =>
     fetchApi<User>(`/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteUser: (id: string) =>
-    fetch(API_BASE + '/users/' + id, { method: 'DELETE' }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
+    fetch(API_BASE + '/users/' + id, { method: 'DELETE', headers: getAuthHeader() }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
   updateUserStatus: (id: string, isActive: boolean) =>
     fetchApi<{ id: string; username: string; isActive: boolean }>(`/users/${id}/status`, { method: 'PATCH', body: JSON.stringify({ isActive }) }),
   changeUserPassword: (id: string, newPassword: string) =>
