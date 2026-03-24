@@ -19,7 +19,7 @@ export const merchandiseRepository = {
     dimensions?: string;
     status?: MerchandiseStatus;
   }) {
-    return prisma.merchandise.create({ data: { id: generateTrackingId(), ...data } });
+    return prisma.merchandise.create({ data: { id: generateTrackingId(), updatedAt: new Date(), ...data } });
   },
 
   async findById(id: string) {

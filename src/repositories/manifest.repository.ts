@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../lib/prisma';
 
 export const manifestRepository = {
@@ -6,7 +7,7 @@ export const manifestRepository = {
     pointOfSaleId: string;
     merchandiseIds: string;
   }) {
-    return prisma.manifest.create({ data });
+    return prisma.manifest.create({ data: { id: uuidv4(), updatedAt: new Date(), ...data } });
   },
 
   async findById(id: string) {

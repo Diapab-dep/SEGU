@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../lib/prisma';
 
 export const guideRepository = {
@@ -6,7 +7,7 @@ export const guideRepository = {
     merchandiseId: string;
     documentUrl?: string;
   }) {
-    return prisma.guide.create({ data });
+    return prisma.guide.create({ data: { id: uuidv4(), ...data } });
   },
 
   async findByMerchandise(merchandiseId: string) {

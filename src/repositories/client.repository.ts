@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../lib/prisma';
 
 export const clientRepository = {
@@ -9,6 +10,6 @@ export const clientRepository = {
   },
 
   async create(data: { name: string; email?: string }) {
-    return prisma.client.create({ data });
+    return prisma.client.create({ data: { id: uuidv4(), updatedAt: new Date(), ...data } });
   },
 };

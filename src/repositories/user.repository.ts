@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../lib/prisma';
 
 export const ROLES = ['advisor', 'supervisor', 'admin'] as const;
@@ -33,7 +34,7 @@ export const userRepository = {
     isDeprisacheckEnabled?: boolean;
     pointOfSaleId?: string;
   }) {
-    return prisma.user.create({ data });
+    return prisma.user.create({ data: { id: uuidv4(), updatedAt: new Date(), ...data } as any });
   },
 
   async update(

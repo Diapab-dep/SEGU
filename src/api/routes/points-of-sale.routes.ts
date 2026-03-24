@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../../lib/prisma';
 
 const router = Router();
@@ -32,7 +33,7 @@ router.post('/', async (req, res) => {
     const { name, type, baseRestrictions } = req.body;
     if (!name || !type) return res.status(400).json({ error: 'name y type son requeridos' });
     if (!['city', 'ato'].includes(type)) return res.status(400).json({ error: 'type debe ser city o ato' });
-    const pos = await prisma.pointOfSale.create({ data: { name, type, baseRestrictions } });
+    const pos = await prisma.pointOfSale.create({ data: { id: uuidv4(), updatedAt: new Date(), name, type, baseRestrictions } });
     res.status(201).json(pos);
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });

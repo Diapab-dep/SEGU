@@ -2,6 +2,7 @@
  * Servicio de recepción de listas de comprobación externas
  * Tareas 3.5.1, 3.5.2
  */
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../lib/prisma';
 
 export interface ReceivedChecklistData {
@@ -23,6 +24,8 @@ export const checklistReceiveService = {
 
     const record = await prisma.merchandiseChecklist.create({
       data: {
+        id: uuidv4(),
+        updatedAt: new Date(),
         merchandiseId: externalData.merchandiseId,
         templateId: externalData.templateId,
         responses: JSON.stringify(externalData.responses),

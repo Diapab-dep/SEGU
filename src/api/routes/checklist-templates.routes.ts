@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
     if (!name || !merchandiseTypeId || !pointOfSaleType)
       return res.status(400).json({ error: 'name, merchandiseTypeId y pointOfSaleType son requeridos' });
     const template = await prisma.checklistTemplate.create({
-      data: { name, merchandiseTypeId, pointOfSaleType, rejectionTemplateId },
+      data: { id: uuidv4(), updatedAt: new Date(), name, merchandiseTypeId, pointOfSaleType, rejectionTemplateId },
     });
     res.status(201).json(template);
   } catch (err) {

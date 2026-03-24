@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../../lib/prisma';
 
 const router = Router();
@@ -43,7 +44,7 @@ router.post('/client-restrictions', async (req, res) => {
     if (existing) return res.status(409).json({ error: 'El cliente ya tiene esta restricción activa' });
 
     const restriction = await prisma.clientRestriction.create({
-      data: { clientId, merchandiseTypeId, restrictionType, pointOfSaleId, isActive: true },
+      data: { id: uuidv4(), updatedAt: new Date(), clientId, merchandiseTypeId, restrictionType, pointOfSaleId, isActive: true },
     });
     res.status(201).json(restriction);
   } catch (err) {

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../lib/prisma';
 
 export const merchandiseChecklistRepository = {
@@ -8,7 +9,7 @@ export const merchandiseChecklistRepository = {
     responses: string;
     status?: 'pending' | 'completed' | 'rejected';
   }) {
-    return prisma.merchandiseChecklist.create({ data });
+    return prisma.merchandiseChecklist.create({ data: { id: uuidv4(), updatedAt: new Date(), ...data } });
   },
 
   async findById(id: string) {
