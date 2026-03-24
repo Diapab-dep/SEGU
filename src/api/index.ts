@@ -43,6 +43,12 @@ const loginLimiter = rateLimit({
 app.use(requestLogger);
 app.use(express.json({ limit: '1mb' }));
 
+// Versión de arquitectura: actualizar SOLO cuando cambie la arquitectura base
+// (modelos de datos, rutas API, autenticación, infraestructura Docker/DB).
+// Cambios de UI, estilos o textos NO deben modificar este valor.
+const APP_VERSION = '1.0';
+app.get('/api/version', (_, res) => res.json({ version: APP_VERSION }));
+
 // Rutas públicas
 app.use('/api/auth', authRoutes);
 app.use('/api/deprisacheck/login', loginLimiter);
@@ -78,8 +84,6 @@ async function checkDatabase(): Promise<boolean> {
 }
 
 const path = require('path');
-const pkg = require(path.join(__dirname, '../../package.json'));
-app.get('/api/version', (_, res) => res.json({ version: pkg.version }));
 
 // Servir frontend en producción
 if (process.env.NODE_ENV === 'production') {

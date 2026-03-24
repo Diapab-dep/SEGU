@@ -156,11 +156,7 @@ export function DeprisaCheck() {
           {templates.length > 0 && (
             <div className="checklist-section">
               <h3>{selectedTemplate?.name}</h3>
-              <div className="button-group" style={{ marginBottom: 12 }}>
-                <button className="btn-secondary" onClick={() => handleSelectAll('true')} disabled={loading}>Marcar todas Sí</button>
-                <button className="btn-secondary" onClick={() => handleSelectAll('false')} disabled={loading}>Marcar todas No</button>
-                <button className="btn-secondary" onClick={() => handleSelectAll('na')} disabled={loading}>Marcar todas N/A</button>
-              </div>
+
               <div className="checklist-items">
                 {selectedTemplate?.items.map((item) => (
                   <div key={item.id} className="checklist-item">

@@ -8,14 +8,14 @@ datasource db {
 }
 
 model ChecklistTemplate {
-  id                     String                  @id @default(uuid())
+  id                     String                  @id
   name                   String
   merchandiseTypeId      String
   pointOfSaleType        String
   rejectionTemplateId    String?
   isActive               Boolean                 @default(true)
   createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
+  updatedAt              DateTime
   MerchandiseTypeCatalog MerchandiseTypeCatalog  @relation(fields: [merchandiseTypeId], references: [id])
   ChecklistTemplateItem  ChecklistTemplateItem[]
   MerchandiseChecklist   MerchandiseChecklist[]
@@ -32,29 +32,29 @@ model ChecklistTemplateItem {
 }
 
 model Client {
-  id                String              @id @default(uuid())
+  id                String              @id
   name              String
   email             String?
   createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  updatedAt         DateTime
   ClientRestriction ClientRestriction[]
   Merchandise       Merchandise[]
 }
 
 model ClientRestriction {
-  id                String   @id @default(uuid())
+  id                String   @id
   clientId          String
   merchandiseTypeId String
   restrictionType   String
   pointOfSaleId     String?
   isActive          Boolean  @default(true)
   createdAt         DateTime @default(now())
-  updatedAt         DateTime            @updatedAt
+  updatedAt         DateTime
   Client            Client   @relation(fields: [clientId], references: [id])
 }
 
 model Guide {
-  id            String      @id @default(uuid())
+  id            String      @id
   guideNumber   String
   merchandiseId String
   printDate     DateTime    @default(now())
@@ -64,17 +64,17 @@ model Guide {
 }
 
 model HandlingPermission {
-  id                String      @id @default(uuid())
+  id                String      @id
   pointOfSaleId     String
   merchandiseTypeId String
   isPermitted       Boolean     @default(true)
   createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  updatedAt         DateTime
   PointOfSale       PointOfSale @relation(fields: [pointOfSaleId], references: [id])
 }
 
 model Manifest {
-  id             String      @id @default(uuid())
+  id             String      @id
   manifestNumber String
   pointOfSaleId  String
   merchandiseIds String
@@ -82,12 +82,12 @@ model Manifest {
   creationDate   DateTime    @default(now())
   deliveryDate   DateTime?
   createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  updatedAt      DateTime
   PointOfSale    PointOfSale @relation(fields: [pointOfSaleId], references: [id])
 }
 
 model Merchandise {
-  id                     String                 @id @default(uuid())
+  id                     String                 @id
   clientId               String
   pointOfSaleId          String
   merchandiseTypeId      String
@@ -98,7 +98,7 @@ model Merchandise {
   status                 String                 @default("pending")
   rejectionReason        String?
   createdAt              DateTime               @default(now())
-  updatedAt              DateTime               @updatedAt
+  updatedAt              DateTime
   Guide                  Guide[]
   Client                 Client                 @relation(fields: [clientId], references: [id])
   MerchandiseTypeCatalog MerchandiseTypeCatalog @relation(fields: [merchandiseTypeId], references: [id])
@@ -107,7 +107,7 @@ model Merchandise {
 }
 
 model MerchandiseChecklist {
-  id                String            @id @default(uuid())
+  id                String            @id
   merchandiseId     String
   templateId        String
   completedByUserId String?
@@ -115,31 +115,31 @@ model MerchandiseChecklist {
   status            String            @default("pending")
   completionDate    DateTime?
   createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  updatedAt         DateTime
   Merchandise       Merchandise       @relation(fields: [merchandiseId], references: [id])
   ChecklistTemplate ChecklistTemplate @relation(fields: [templateId], references: [id])
 }
 
 model MerchandiseTypeCatalog {
-  id                String              @id @default(uuid())
+  id                String              @id
   code              String              @unique
   name              String
   requiresChecklist Boolean             @default(false)
   isActive          Boolean             @default(true)
   createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  updatedAt         DateTime
   ChecklistTemplate ChecklistTemplate[]
   Merchandise       Merchandise[]
 }
 
 model PointOfSale {
-  id                 String               @id @default(uuid())
+  id                 String               @id
   name               String
   type               String
   baseRestrictions   String?
   isActive           Boolean              @default(true)
   createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  updatedAt          DateTime
   HandlingPermission HandlingPermission[]
   Manifest           Manifest[]
   Merchandise        Merchandise[]
@@ -147,16 +147,16 @@ model PointOfSale {
 }
 
 model User {
-  id                    String       @id @default(uuid())
+  id                    String       @id
   username              String       @unique
   passwordHash          String
   email                 String?
   role                  String       @default("advisor")
   isDeprisacheckEnabled Boolean      @default(false)
-  isActive              Boolean      @default(true)
   pointOfSaleId         String?
   createdAt             DateTime     @default(now())
-  updatedAt             DateTime     @updatedAt
+  updatedAt             DateTime
+  isActive              Boolean      @default(true)
   PointOfSale           PointOfSale? @relation(fields: [pointOfSaleId], references: [id])
 }
 

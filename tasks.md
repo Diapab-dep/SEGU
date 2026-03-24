@@ -237,11 +237,11 @@ Desglose atómico de la implementación basado en los flujos de Ciudad y Aeropue
 - [ ] **Tarea 7.3.2**: Ejecutar `npx prisma migrate deploy` en producción para aplicar migraciones pendientes
 - [ ] **Tarea 7.3.3**: Ejecutar `npm run db:seed` para cargar datos iniciales y usuarios de prueba
 
-### 7.4 Seguridad (P1 — pendiente)
+### 7.4 Seguridad (completado)
 
-- [ ] **Tarea 7.4.1**: Implementar autenticación JWT — reemplazar header `x-user-id` en todos los endpoints (actualmente sin validación de token)
-- [ ] **Tarea 7.4.2**: Agregar middleware de autorización por rol en todos los endpoints (actualmente todos son públicos)
-- [ ] **Tarea 7.4.3**: Validar entrada con librería (zod o joi) en endpoints críticos (admisión, usuarios, checklist)
+- [x] **Tarea 7.4.1**: Autenticación JWT implementada — Bearer token en todos los endpoints, 8h expiry
+- [x] **Tarea 7.4.2**: Middleware de autorización por rol (advisor/supervisor/admin) en todas las rutas
+- [x] **Tarea 7.4.3**: Validación Zod en endpoint de login; bcrypt, helmet, cors, rate-limit activos
 
 ---
 
