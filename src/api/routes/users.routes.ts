@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
       email,
       role,
       isDeprisacheckEnabled,
-      pointOfSaleId,
+      pointOfSaleId: pointOfSaleId || undefined,
     });
     res.status(201).json({
       id: user.id,
