@@ -41,13 +41,6 @@ export function DeprisaCheck() {
     setResponses((r) => ({ ...r, [itemId]: value }));
   };
 
-  const handleSelectAll = (value: 'true' | 'false' | 'na') => {
-    if (!selectedTemplate) return;
-    const all: Record<string, string> = {};
-    selectedTemplate.items.forEach((item) => { all[item.id] = value; });
-    setResponses(all);
-  };
-
   const handleSave = async () => {
     if (!merchandiseId || !selectedTemplate) return;
     setLoading(true);

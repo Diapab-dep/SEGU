@@ -10,7 +10,7 @@ export function Dashboard() {
       <div className="dashboard-page-header">
         <h1 className="dashboard-title">Dashboard</h1>
         <span className="dashboard-role-tag">
-          {user?.role === 'advisor' ? 'Asesor' : user?.role === 'admin' ? 'Administrador' : 'Supervisor'}
+          {user?.role === 'asesor' ? 'Asesor' : user?.role === 'admin' ? 'Administrador' : 'Supervisor'}
         </span>
       </div>
 
@@ -20,7 +20,7 @@ export function Dashboard() {
       </div>
 
       <div className="dashboard-modules">
-        {(user?.role === 'advisor' || user?.role === 'admin') && (
+        {(user?.role === 'asesor' || user?.role === 'admin') && (
           <>
             <div className="module-card">
               <div className="module-card-icon module-icon-blue">
