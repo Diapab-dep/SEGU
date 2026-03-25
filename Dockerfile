@@ -9,6 +9,7 @@ RUN npm run build
 # ── Stage 2: Build Backend ────────────────────────────────────────────────────
 FROM node:20-alpine AS backend-build
 WORKDIR /app
+RUN apk add --no-cache openssl
 COPY package*.json ./
 RUN npm ci --silent
 COPY prisma/ ./prisma/
@@ -20,6 +21,7 @@ RUN npm run build
 # ── Stage 3: Production ───────────────────────────────────────────────────────
 FROM node:20-alpine AS production
 WORKDIR /app
+RUN apk add --no-cache openssl
 
 ENV NODE_ENV=production
 ENV PRISMA_QUERY_ENGINE_LIBRARY=/app/node_modules/.prisma/client/libquery_engine-linux-musl-openssl-3.0.x.so.node
