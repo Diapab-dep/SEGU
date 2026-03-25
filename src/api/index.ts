@@ -22,8 +22,8 @@ import { prisma } from '../lib/prisma';
 
 const app = express();
 
-// Security headers (upgrade-insecure-requests deshabilitado — app corre en HTTP sin TLS)
-app.use(helmet({ contentSecurityPolicy: { directives: { ...helmet.contentSecurityPolicy.getDefaultDirectives(), upgradeInsecureRequests: null } } }));
+// Security headers (CSP deshabilitado — app corre en HTTP/HTTPS sin dominio propio)
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // CORS — permite solo el frontend configurado en env (o localhost en dev)
 const allowedOrigins = process.env.FRONTEND_URL
