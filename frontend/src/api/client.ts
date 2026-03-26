@@ -110,6 +110,18 @@ export const api = {
   deleteClientRestriction: (id: string) =>
     fetch(`${API_BASE}/client-restrictions/${id}`, { method: 'DELETE', headers: getAuthHeader() }).then((r) => (r.ok ? undefined : r.json().then((e) => Promise.reject(new Error(e.error))))),
 
+  // --- Auditoría ---
+  getAuditLogs: (filters?: AuditFilters) => {
+    const params = new URLSearchParams();
+    if (filters?.userId) params.set('userId', filters.userId);
+    if (filters?.action) params.set('action', filters.action);
+    if (filters?.entityType) params.set('entityType', filters.entityType);
+    if (filters?.from) params.set('from', filters.from);
+    if (filters?.to) params.set('to', filters.to);
+    if (filters?.limit) params.set('limit', String(filters.limit));
+    return fetchApi<AuditLog[]>(`/audit?${params}`);
+  },
+
   // --- Usuarios ---
   getRoles: () => fetchApi<{ code: string; name: string }[]>('/users/roles'),
   getUsers: () => fetchApi<User[]>('/users'),
@@ -268,6 +280,27 @@ export interface Metrics {
   requiresDeprisacheck: number;
   accepted: number;
   rejected: number;
+}
+
+export interface AuditLog {
+  id: string;
+  userId?: string;
+  username?: string;
+  action: string;
+  entityType?: string;
+  entityId?: string;
+  details?: string;
+  ipAddress?: string;
+  createdAt: string;
+}
+
+export interface AuditFilters {
+  userId?: string;
+  action?: string;
+  entityType?: string;
+  from?: string;
+  to?: string;
+  limit?: number;
 }
 
 export interface AdmissionDetail {

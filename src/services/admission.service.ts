@@ -12,6 +12,7 @@ import {
   isHandlingPermitted,
 } from '../validators';
 import { rejectionService } from './rejection.service';
+import { auditService } from './audit.service';
 import type { MerchandiseData } from '../types';
 
 export interface StartAdmissionResult {
@@ -44,11 +45,20 @@ export const admissionService = {
       clientId: merchandiseData.clientId,
       pointOfSaleId,
       merchandiseTypeId: merchandiseData.merchandiseTypeId,
+      createdByUserId: userId,
       description: merchandiseData.description,
       classificationCode: merchandiseData.classificationCode,
       weight: merchandiseData.weight,
       dimensions: merchandiseData.dimensions,
       status: 'pending',
+    });
+
+    await auditService.log({
+      userId,
+      action: 'ADMISSION_CREATE',
+      entityType: 'Merchandise',
+      entityId: merchandise.id,
+      details: { clientId: merchandiseData.clientId, pointOfSaleId, merchandiseTypeId: merchandiseData.merchandiseTypeId },
     });
 
     const requiresChecklist = await doesMerchandiseTypeRequireChecklist(merchandiseData.merchandiseTypeId);

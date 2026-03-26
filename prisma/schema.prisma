@@ -92,6 +92,7 @@ model Merchandise {
   clientId               String
   pointOfSaleId          String
   merchandiseTypeId      String
+  createdByUserId        String?
   description            String?
   classificationCode     String?
   weight                 Float?
@@ -112,6 +113,8 @@ model MerchandiseChecklist {
   merchandiseId     String
   templateId        String
   completedByUserId String?
+  approvedByUserId  String?
+  approvedAt        DateTime?
   responses         String
   status            String            @default("pending")
   completionDate    DateTime?
@@ -159,6 +162,18 @@ model User {
   updatedAt             DateTime
   isActive              Boolean      @default(true)
   PointOfSale           PointOfSale? @relation(fields: [pointOfSaleId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id
+  userId     String?
+  username   String?
+  action     String
+  entityType String?
+  entityId   String?
+  details    String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
 }
 
 model checklist {

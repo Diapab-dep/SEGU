@@ -26,7 +26,7 @@ export const merchandiseChecklistRepository = {
     });
   },
 
-  async update(id: string, data: { responses?: string; status?: string; completionDate?: Date; completedByUserId?: string }) {
+  async update(id: string, data: { responses?: string; status?: string; completionDate?: Date; completedByUserId?: string; approvedByUserId?: string; approvedAt?: Date }) {
     return prisma.merchandiseChecklist.update({
       where: { id },
       data,

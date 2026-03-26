@@ -12,6 +12,7 @@ import { AdmissionDetail } from './pages/AdmissionDetail';
 import { PointsOfSale } from './pages/PointsOfSale';
 import { ChecklistTemplates } from './pages/ChecklistTemplates';
 import { ClientRestrictions } from './pages/ClientRestrictions';
+import { AuditLogs } from './pages/AuditLogs';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -40,6 +41,7 @@ function AppRoutes() {
         <Route path="points-of-sale" element={<PointsOfSale />} />
         <Route path="checklist-templates" element={<ChecklistTemplates />} />
         <Route path="client-restrictions" element={<ClientRestrictions />} />
+        <Route path="audit-logs" element={<AuditLogs />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

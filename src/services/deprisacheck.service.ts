@@ -8,6 +8,7 @@ import { merchandiseRepository } from '../repositories/merchandise.repository';
 import { validateChecklistCompletion } from '../validators/checklist.validator';
 import { documentationService } from './documentation.service';
 import { rejectionService } from './rejection.service';
+import { auditService } from './audit.service';
 
 export const deprisacheckService = {
   async getChecklistTemplates(merchandiseTypeId: string, pointOfSaleType: string) {
@@ -26,18 +27,34 @@ export const deprisacheckService = {
     const responsesStr = JSON.stringify(responses);
 
     if (existingForTemplate) {
-      return merchandiseChecklistRepository.update(existingForTemplate.id, {
+      const updated = await merchandiseChecklistRepository.update(existingForTemplate.id, {
         responses: responsesStr,
       });
+      await auditService.log({
+        userId,
+        action: 'CHECKLIST_CREATE',
+        entityType: 'MerchandiseChecklist',
+        entityId: existingForTemplate.id,
+        details: { merchandiseId, templateId, updated: true },
+      });
+      return updated;
     }
 
-    return merchandiseChecklistRepository.create({
+    const checklist = await merchandiseChecklistRepository.create({
       merchandiseId,
       templateId,
       completedByUserId: userId,
       responses: responsesStr,
       status: 'pending',
     });
+    await auditService.log({
+      userId,
+      action: 'CHECKLIST_CREATE',
+      entityType: 'MerchandiseChecklist',
+      entityId: checklist.id,
+      details: { merchandiseId, templateId },
+    });
+    return checklist;
   },
 
   async submitChecklistForAcceptance(checklistId: string, userId: string) {
@@ -55,6 +72,13 @@ export const deprisacheckService = {
         status: 'rejected',
         completionDate: new Date(),
       });
+      await auditService.log({
+        userId,
+        action: 'CHECKLIST_REJECT',
+        entityType: 'MerchandiseChecklist',
+        entityId: checklistId,
+        details: { merchandiseId, missingItems: validation.missingItems },
+      });
       return { accepted: false, missingItems: validation.missingItems };
     }
 
@@ -62,6 +86,14 @@ export const deprisacheckService = {
     await merchandiseChecklistRepository.update(checklistId, {
       status: 'completed',
       completionDate: new Date(),
+    });
+
+    await auditService.log({
+      userId,
+      action: 'CHECKLIST_SUBMIT',
+      entityType: 'MerchandiseChecklist',
+      entityId: checklistId,
+      details: { merchandiseId, accepted: true },
     });
 
     await documentationService.archiveDocumentation(merchandiseId, []);

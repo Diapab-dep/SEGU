@@ -13,6 +13,7 @@ export const merchandiseRepository = {
     clientId: string;
     pointOfSaleId: string;
     merchandiseTypeId: string;
+    createdByUserId?: string;
     description?: string;
     classificationCode?: string;
     weight?: number;

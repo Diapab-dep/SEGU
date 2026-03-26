@@ -15,6 +15,7 @@ import supervisorRoutes from './routes/supervisor.routes';
 import pointsOfSaleRoutes from './routes/points-of-sale.routes';
 import checklistTemplatesRoutes from './routes/checklist-templates.routes';
 import clientRestrictionsRoutes from './routes/client-restrictions.routes';
+import auditRoutes from './routes/audit.routes';
 import { requestLogger } from './middleware/request-logger';
 import { authenticate } from './middleware/auth.middleware';
 import { authorize } from './middleware/authorize';
@@ -66,6 +67,7 @@ app.use('/api/manifests',            authenticate, authorize('advisor', 'admin')
 app.use('/api/operations',           authenticate, authorize('advisor', 'admin'), operationsRoutes);
 app.use('/api/checklists',           authenticate, checklistsRoutes);
 app.use('/api',                      authenticate, authorize('admin'), clientRestrictionsRoutes);
+app.use('/api/audit',                authenticate, authorize('admin'), auditRoutes);
 
 app.get('/health', async (_, res) => {
   const dbOk = await checkDatabase();

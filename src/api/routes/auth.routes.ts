@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { userRepository } from '../../repositories/user.repository';
 import { userService } from '../../services/user.service';
 import { generateToken } from '../middleware/auth.middleware';
+import { auditService } from '../../services/audit.service';
 
 const router = Router();
 
@@ -41,6 +42,13 @@ router.post('/login', async (req, res) => {
     };
 
     const token = generateToken(payload);
+
+    await auditService.log({
+      userId: user.id,
+      username: user.username,
+      action: 'LOGIN',
+      ipAddress: req.ip,
+    });
 
     res.json({ ...payload, token });
   } catch (err) {

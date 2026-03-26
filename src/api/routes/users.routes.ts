@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { userService } from '../../services/user.service';
+import { auditService } from '../../services/audit.service';
 
 const router = Router();
 
@@ -58,6 +59,14 @@ router.post('/', async (req, res) => {
       isDeprisacheckEnabled,
       pointOfSaleId: pointOfSaleId || undefined,
     });
+    await auditService.log({
+      userId: req.user?.id,
+      username: req.user?.username,
+      action: 'USER_CREATE',
+      entityType: 'User',
+      entityId: user.id,
+      details: { username: user.username, role: user.role },
+    });
     res.status(201).json({
       id: user.id,
       username: user.username,
@@ -79,6 +88,14 @@ router.put('/:id', async (req, res) => {
       isDeprisacheckEnabled,
       pointOfSaleId: pointOfSaleId ?? undefined,
     });
+    await auditService.log({
+      userId: req.user?.id,
+      username: req.user?.username,
+      action: 'USER_UPDATE',
+      entityType: 'User',
+      entityId: user.id,
+      details: { email, role, isDeprisacheckEnabled, pointOfSaleId },
+    });
     res.json({
       id: user.id,
       username: user.username,
@@ -94,6 +111,13 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     await userService.deleteUser(req.params.id);
+    await auditService.log({
+      userId: req.user?.id,
+      username: req.user?.username,
+      action: 'USER_DELETE',
+      entityType: 'User',
+      entityId: req.params.id,
+    });
     res.status(204).send();
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });

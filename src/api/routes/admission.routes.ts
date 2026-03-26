@@ -6,6 +6,7 @@ import { Router } from 'express';
 import { admissionService } from '../../services/admission.service';
 import { rejectionService } from '../../services/rejection.service';
 import { merchandiseRepository } from '../../repositories/merchandise.repository';
+import { auditService } from '../../services/audit.service';
 
 const router = Router();
 
@@ -59,6 +60,13 @@ router.post('/:merchandiseId/accept', async (req, res) => {
       return res.status(400).json({ error: `Solo se puede aprobar desde estado pending. Estado actual: ${merchandise.status}` });
     }
     const updated = await merchandiseRepository.updateStatus(merchandiseId, 'accepted');
+    const userId = req.headers['x-user-id'] as string | undefined;
+    await auditService.log({
+      userId,
+      action: 'ADMISSION_ACCEPT',
+      entityType: 'Merchandise',
+      entityId: merchandiseId,
+    });
     res.json({ merchandiseId: updated.id, status: updated.status });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
@@ -72,7 +80,15 @@ router.post('/:merchandiseId/reject', async (req, res) => {
     if (!reason) {
       return res.status(400).json({ error: 'reason es requerido' });
     }
+    const userId = req.headers['x-user-id'] as string | undefined;
     await rejectionService.rejectAdmission(merchandiseId, reason, { clientEmail });
+    await auditService.log({
+      userId,
+      action: 'ADMISSION_REJECT',
+      entityType: 'Merchandise',
+      entityId: merchandiseId,
+      details: { reason },
+    });
     res.json({ merchandiseId, status: 'rejected' });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
