@@ -1,25 +1,27 @@
 import { PrismaClient } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
+const now = new Date();
 
 const MERCHANDISE_TYPES = [
-  { code: 'ANIMALES_VIVOS', name: 'Animales vivos', requiresChecklist: true },
-  { code: 'RESTOS_HUMANOS', name: 'Restos humanos', requiresChecklist: true },
-  { code: 'PERECEDEROS', name: 'Perecederos', requiresChecklist: true },
-  { code: 'ARMAS', name: 'Armas', requiresChecklist: true },
-  { code: 'BATERIAS_LITIO', name: 'Baterías de litio', requiresChecklist: true },
-  { code: 'RADIACTIVOS', name: 'Radiactivos y no radiactivos', requiresChecklist: true },
-  { code: 'SUSTANCIAS_BIOLOGICAS', name: 'Sustancias biológicas', requiresChecklist: true },
-  { code: 'HIELO_SECO', name: 'Hielo seco', requiresChecklist: true },
-  { code: 'ESTANDAR', name: 'Mercancía estándar', requiresChecklist: false },
+  { code: 'ANIMALES_VIVOS',        name: 'Animales vivos',                    requiresChecklist: true },
+  { code: 'RESTOS_HUMANOS',        name: 'Restos humanos',                    requiresChecklist: true },
+  { code: 'PERECEDEROS',           name: 'Perecederos',                       requiresChecklist: true },
+  { code: 'ARMAS',                 name: 'Armas',                             requiresChecklist: true },
+  { code: 'BATERIAS_LITIO',        name: 'Baterías de litio',                 requiresChecklist: true },
+  { code: 'RADIACTIVOS',           name: 'Radiactivos y no radiactivos',       requiresChecklist: true },
+  { code: 'SUSTANCIAS_BIOLOGICAS', name: 'Sustancias biológicas',             requiresChecklist: true },
+  { code: 'HIELO_SECO',            name: 'Hielo seco',                        requiresChecklist: true },
+  { code: 'ESTANDAR',              name: 'Mercancía estándar',                requiresChecklist: false },
 ];
 
 async function main() {
   for (const t of MERCHANDISE_TYPES) {
     await prisma.merchandiseTypeCatalog.upsert({
       where: { code: t.code },
-      update: { name: t.name, requiresChecklist: t.requiresChecklist },
-      create: t,
+      update: { name: t.name, requiresChecklist: t.requiresChecklist, updatedAt: now },
+      create: { id: uuidv4(), updatedAt: now, ...t },
     });
   }
 
@@ -28,30 +30,20 @@ async function main() {
 
   const client = await prisma.client.upsert({
     where: { id: 'client-1' },
-    update: {},
-    create: { id: 'client-1', name: 'Cliente Ejemplo', email: 'cliente@example.com' },
+    update: { updatedAt: now },
+    create: { id: 'client-1', name: 'Cliente Ejemplo', email: 'cliente@example.com', updatedAt: now },
   });
 
   const posCity = await prisma.pointOfSale.upsert({
     where: { id: 'pos-city-1' },
-    update: {},
-    create: {
-      id: 'pos-city-1',
-      name: 'Punto Ciudad 1',
-      type: 'city',
-      isActive: true,
-    },
+    update: { updatedAt: now },
+    create: { id: 'pos-city-1', name: 'Punto Ciudad 1', type: 'city', isActive: true, updatedAt: now },
   });
 
   const posAto = await prisma.pointOfSale.upsert({
     where: { id: 'pos-ato-1' },
-    update: { name: 'ATO Punto 1' },
-    create: {
-      id: 'pos-ato-1',
-      name: 'ATO Punto 1',
-      type: 'airport_ato',
-      isActive: true,
-    },
+    update: { name: 'ATO Punto 1', updatedAt: now },
+    create: { id: 'pos-ato-1', name: 'ATO Punto 1', type: 'airport_ato', isActive: true, updatedAt: now },
   });
 
   // Contraseñas de prueba (bcrypt 10 rounds):
@@ -60,8 +52,9 @@ async function main() {
   // admin      → admin123
   await prisma.user.upsert({
     where: { username: 'asesor_ato' },
-    update: { role: 'advisor', passwordHash: '$2b$10$oa6x.NAEM/K9XgFKeWw3ROfbKV4vPWH.Ma9jfOl9J0tl.ZJrEkicC' },
+    update: { role: 'advisor', passwordHash: '$2b$10$oa6x.NAEM/K9XgFKeWw3ROfbKV4vPWH.Ma9jfOl9J0tl.ZJrEkicC', updatedAt: now },
     create: {
+      id: uuidv4(), updatedAt: now,
       username: 'asesor_ato',
       passwordHash: '$2b$10$oa6x.NAEM/K9XgFKeWw3ROfbKV4vPWH.Ma9jfOl9J0tl.ZJrEkicC',
       email: 'asesor@example.com',
@@ -73,8 +66,9 @@ async function main() {
 
   await prisma.user.upsert({
     where: { username: 'supervisor' },
-    update: { passwordHash: '$2b$10$qUdTC8zweodbPzUK/ckedeYHrmncwvpb5V5xZvzrRchR2LULuS3zS' },
+    update: { passwordHash: '$2b$10$qUdTC8zweodbPzUK/ckedeYHrmncwvpb5V5xZvzrRchR2LULuS3zS', updatedAt: now },
     create: {
+      id: uuidv4(), updatedAt: now,
       username: 'supervisor',
       passwordHash: '$2b$10$qUdTC8zweodbPzUK/ckedeYHrmncwvpb5V5xZvzrRchR2LULuS3zS',
       email: 'supervisor@example.com',
@@ -84,8 +78,9 @@ async function main() {
 
   await prisma.user.upsert({
     where: { username: 'admin' },
-    update: { passwordHash: '$2b$10$kxv9PiIL3mDvG3jhsR8ToeCxtOVzSzzEcXtPL1i8FpCtXl7SFE3Ue' },
+    update: { passwordHash: '$2b$10$kxv9PiIL3mDvG3jhsR8ToeCxtOVzSzzEcXtPL1i8FpCtXl7SFE3Ue', updatedAt: now },
     create: {
+      id: uuidv4(), updatedAt: now,
       username: 'admin',
       passwordHash: '$2b$10$kxv9PiIL3mDvG3jhsR8ToeCxtOVzSzzEcXtPL1i8FpCtXl7SFE3Ue',
       email: 'admin@example.com',
@@ -100,9 +95,9 @@ async function main() {
   if (typeBaterias) {
     const template = await prisma.checklistTemplate.upsert({
       where: { id: 'template-1' },
-      update: { pointOfSaleType: 'ato' },
+      update: { pointOfSaleType: 'ato', updatedAt: now },
       create: {
-        id: 'template-1',
+        id: 'template-1', updatedAt: now,
         name: 'Lista Baterías de Litio',
         merchandiseTypeId: typeBaterias.id,
         pointOfSaleType: 'ato',
