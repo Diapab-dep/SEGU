@@ -20,6 +20,8 @@ import { requestLogger } from './middleware/request-logger';
 import { authenticate } from './middleware/auth.middleware';
 import { authorize } from './middleware/authorize';
 import { prisma } from '../lib/prisma';
+import path from 'path';
+import { userService } from '../services/user.service';
 
 const app = express();
 
@@ -53,6 +55,18 @@ app.get('/api/version', (_, res) => res.json({ version: APP_VERSION }));
 // Rutas públicas
 app.use('/api/auth', authRoutes);
 app.use('/api/deprisacheck/login', loginLimiter);
+// Endpoint público para dropdown de login (solo devuelve usernames, sin datos sensibles)
+app.get('/api/users/list-for-login', async (_req, res) => {
+  try {
+    const users = await userService.listUsers();
+    const active = users
+      .filter((u) => (u as { isActive?: boolean }).isActive !== false && u.isDeprisacheckEnabled)
+      .map((u) => ({ username: u.username }));
+    res.json(active);
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
 
 // Rutas protegidas — requieren JWT válido
 app.use('/api/merchandise-types',    authenticate, merchandiseTypesRoutes);
@@ -84,8 +98,6 @@ async function checkDatabase(): Promise<boolean> {
     return false;
   }
 }
-
-const path = require('path');
 
 // Servir frontend en producción
 if (process.env.NODE_ENV === 'production') {
