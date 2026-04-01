@@ -8,6 +8,8 @@ export const merchandiseChecklistRepository = {
     completedByUserId?: string;
     responses: string;
     status?: 'pending' | 'completed' | 'rejected';
+    guideNumber?: string;
+    startTime?: Date;
   }) {
     return prisma.merchandiseChecklist.create({ data: { id: uuidv4(), updatedAt: new Date(), ...data } });
   },
@@ -26,7 +28,20 @@ export const merchandiseChecklistRepository = {
     });
   },
 
-  async update(id: string, data: { responses?: string; status?: string; completionDate?: Date; completedByUserId?: string; approvedByUserId?: string; approvedAt?: Date }) {
+  async update(id: string, data: {
+    responses?: string;
+    status?: string;
+    completionDate?: Date;
+    completedByUserId?: string;
+    approvedByUserId?: string;
+    approvedAt?: Date;
+    startTime?: Date;
+    endTime?: Date;
+    guideNumber?: string;
+    clientEmail?: string;
+    observations?: string;
+    rejectedItems?: string;
+  }) {
     return prisma.merchandiseChecklist.update({
       where: { id },
       data,

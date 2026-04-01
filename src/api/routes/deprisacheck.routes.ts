@@ -53,7 +53,7 @@ router.get('/checklists/templates', async (req, res) => {
 
 router.post('/checklists', async (req, res) => {
   try {
-    const { merchandiseId, templateId, responses } = req.body;
+    const { merchandiseId, templateId, responses, guideNumber } = req.body;
     const userId = req.headers['x-user-id'] as string;
     if (!merchandiseId || !templateId || !responses) {
       return res.status(400).json({ error: 'merchandiseId, templateId y responses son requeridos' });
@@ -62,7 +62,8 @@ router.post('/checklists', async (req, res) => {
       merchandiseId,
       templateId,
       userId,
-      responses
+      responses,
+      { guideNumber }
     );
     res.json(checklist);
   } catch (err) {
@@ -74,7 +75,12 @@ router.post('/checklists/:checklistId/submit', async (req, res) => {
   try {
     const { checklistId } = req.params;
     const userId = req.headers['x-user-id'] as string;
-    const result = await deprisacheckService.submitChecklistForAcceptance(checklistId, userId);
+    const { clientEmail, observations } = req.body ?? {};
+    const result = await deprisacheckService.submitChecklistForAcceptance(
+      checklistId,
+      userId,
+      { clientEmail, observations }
+    );
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });

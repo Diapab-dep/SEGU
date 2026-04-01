@@ -63,14 +63,17 @@ export const api = {
   // --- DeprisaCheck ---
   getChecklistTemplates: (merchandiseTypeId: string, pointOfSaleType: string) =>
     fetchApi<ChecklistTemplate[]>(`/deprisacheck/checklists/templates?merchandiseTypeId=${merchandiseTypeId}&pointOfSaleType=${pointOfSaleType}`),
-  createChecklist: (data: { merchandiseId: string; templateId: string; responses: Record<string, string | boolean> }) =>
+  createChecklist: (data: { merchandiseId: string; templateId: string; responses: Record<string, string | boolean>; guideNumber?: string }) =>
     fetchApi<{ id: string }>('/deprisacheck/checklists', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'x-user-id': '1' },
     }),
-  submitChecklist: (id: string) =>
-    fetchApi<{ accepted: boolean }>(`/deprisacheck/checklists/${id}/submit`, { method: 'POST' }),
+  submitChecklist: (id: string, body?: { clientEmail?: string; observations?: string }) =>
+    fetchApi<SubmitChecklistResult>(`/deprisacheck/checklists/${id}/submit`, {
+      method: 'POST',
+      body: JSON.stringify(body ?? {}),
+    }),
 
   // --- Puntos de venta ---
   getPointsOfSale: () => fetchApi<PointOfSale[]>('/points-of-sale'),
@@ -187,6 +190,14 @@ export interface AdmissionStatus {
   merchandiseId: string;
   status: string;
   rejectionReason?: string;
+}
+
+export interface SubmitChecklistResult {
+  accepted: boolean;
+  missingItems?: string[];
+  rejectedByItems?: string[];
+  rejectedItemNumbers?: string[];
+  emailSent?: boolean;
 }
 
 export interface ChecklistTemplate {

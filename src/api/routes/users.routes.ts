@@ -8,6 +8,23 @@ router.get('/roles', (_req, res) => {
   res.json(userService.getRoles());
 });
 
+/**
+ * Endpoint público para el dropdown de login.
+ * Retorna solo username (nombre de usuario) de usuarios activos habilitados para DeprisaCheck.
+ * No requiere autenticación ya que es el paso previo al login.
+ */
+router.get('/list-for-login', async (_req, res) => {
+  try {
+    const users = await userService.listUsers();
+    const active = users
+      .filter((u) => (u as { isActive?: boolean }).isActive !== false && u.isDeprisacheckEnabled)
+      .map((u) => ({ username: u.username }));
+    res.json(active);
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message });
+  }
+});
+
 router.get('/', async (_req, res) => {
   try {
     const users = await userService.listUsers();

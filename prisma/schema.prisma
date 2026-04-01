@@ -28,6 +28,10 @@ model ChecklistTemplateItem {
   text              String
   required          Boolean           @default(false)
   order             Int               @default(0)
+  segment           String?
+  rejectsOnYes      Boolean           @default(false)
+  hasExpansion      Boolean           @default(false)
+  expansionLabel    String?
   createdAt         DateTime          @default(now())
   ChecklistTemplate ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
 }
@@ -118,6 +122,12 @@ model MerchandiseChecklist {
   responses         String
   status            String            @default("pending")
   completionDate    DateTime?
+  startTime         DateTime?
+  endTime           DateTime?
+  guideNumber       String?
+  clientEmail       String?
+  observations      String?
+  rejectedItems     String?
   createdAt         DateTime          @default(now())
   updatedAt         DateTime
   Merchandise       Merchandise       @relation(fields: [merchandiseId], references: [id])
@@ -128,6 +138,7 @@ model MerchandiseTypeCatalog {
   id                String              @id
   code              String              @unique
   name              String
+  category          String?
   requiresChecklist Boolean             @default(false)
   isActive          Boolean             @default(true)
   createdAt         DateTime            @default(now())
